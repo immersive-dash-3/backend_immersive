@@ -1,0 +1,6 @@
+export JWT_KEY=''
+export DBUSER=''
+export DBPASS=''
+export DBHOST=''
+export DBPORT=''
+export DBNAME=''
