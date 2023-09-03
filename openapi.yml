@@ -1,17 +1,514 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: API immersive-dash
   description: The documentation of endpoints for immersive dashboard
-  version: '1.0'
+  version: "1.0"
 servers:
   - url: https://api.server.test/v1
 paths:
-# users
+  # users
   /test:
     get:
       responses:
-        '200':
+        "200":
           description: OK
-# mentee
-# log
-#class
+  # mentee
+  # log
+  #class
+
+  /classes:
+    post:
+      tags:
+        - Class
+      description: Menambah data class
+      summary: add class
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: "FE 11"
+      responses:
+        "201":
+          description: Insert berhasil.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "success"
+                  message: "insert berhasil"
+                  data:
+                    id: 1
+                    name: "FE 11"
+        "400":
+          description: insert gagal.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "failed"
+                  message: "insert class failed, bad request"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+    get:
+      tags:
+        - Class
+      summary: get all class
+      description: Melihat seluruh data class
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "success"
+                  message: "success get all class"
+                  data:
+                    - id: 1
+                      name: "FE 11"
+                    - id: 2
+                      name: "BE 13"
+                    - id: 3
+                      name: "FE 14"
+
+        "400":
+          $ref: "#/components/responses/responseFailed"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+  /classes/{class_id}:
+    put:
+      tags:
+        - Class
+      description: Mengedit data class
+      summary: update class
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: class_id
+          description: "id class"
+          required: true
+          in: path
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: "FE 14"
+      responses:
+        "200":
+          description: Edit berhasil.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "success"
+                  message: "edit berhasil"
+                  data:
+                    id: 1
+                    name: "FE 14"
+        "400":
+          description: edit gagal.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "failed"
+                  message: "update class failed, bad request"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+    delete:
+      tags:
+        - Class
+      description: Menghapus data class
+      summary: delete class
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: class_id
+          description: "id class"
+          required: true
+          in: path
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Delete berhasil.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "success"
+                  message: "delete berhasil"
+        "400":
+          description: edit gagal.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "failed"
+                  message: "delete class failed, bad request"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+    get:
+      tags:
+        - Class
+      description: Membaca data class by id
+      summary: get class by id
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: class_id
+          description: "id class"
+          required: true
+          in: path
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: get success.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "success"
+                  message: "berhasil membaca data class"
+                  data:
+                    id: 3
+                    name: "FE 12"
+        "400":
+          description: get failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: "failed"
+                  message: "get class by id failed, bad request"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+#==================================#
+#    COMPONENT
+#==================================#
+components:
+  #==================================#
+  #    JWT
+  #==================================#
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "use Token"
+  #==================================#
+  #    SCHEMAS
+  #==================================#
+  schemas:
+    requestClass:
+      type: object
+      properties:
+        "name":
+          type: string
+          minLength: 1
+    responseClasses:
+      type: object
+      properties:
+        "id":
+          type: number
+          minLength: 1
+        "name":
+          type: string
+          minLength: 1
+    successGetSingleClassResponse:
+      type: object
+      properties:
+        {
+          "code": { type: number },
+          "message": { type: string },
+          "status": { type: string },
+          "data": { type: object },
+        }
+    successGetAllClassResponse:
+      type: object
+      properties:
+        {
+          "code": { type: number },
+          "message": { type: string },
+          "status": { type: string },
+          "data": { type: array, items: { type: object } },
+        }
+    successResponse:
+      type: object
+      properties:
+        {
+          "code": { type: number },
+          "message": { type: string },
+          "status": { type: string },
+        }
+    failedResponse:
+      type: object
+      properties:
+        {
+          "code": { type: number },
+          "message": { type: string },
+          "status": { type: string },
+        }
+
+  #==================================#
+  #    PARAMETERS
+  #==================================#
+  # parameters:
+  #   dataBook:
+  #     name: "dataBook"
+  #     in: query
+
+  requestBodies:
+    classData:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestClass"
+            type: object
+            properties:
+              name:
+                type: string
+                example: FE 11
+
+  responses:
+    #==================================#
+    #    RESPONSE FOR GENERAL REQUEST
+    #==================================#
+    responseSuccess:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Successful Operation
+    responseSuccessCreate:
+      description: Successful created Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 201
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Successful created
+    responseFailed:
+      description: request failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: Bad Request
+    responseFailedInternal:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 500
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: Internal Server Error
+
+    #==================================#
+    #    RESPONSE GET Class By Id
+    #==================================#
+    getUserProfileSuccess:
+      description: success get class by id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Success Get User Profile
+              data:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: FE 11
+    getClassByIdFailed:
+      description: fail to get class by id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: Fail to Get class by id
+
+    #==================================#
+    #    RESPONSE EDIT class by id
+    #==================================#
+    editClassByIdSuccess:
+      description: success change class by id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Success Update class
+              data:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: FE 12
+    editClassByIdFailed:
+      description: fail to change class by id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Fail to Update class
+
+    #==================================#
+    #    RESPONSE GET ALL Class
+    #==================================#
+    getAllClassSuccess:
+      description: success get all class
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Success Get All Class
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: BE 18
+    getAllClassFailed:
+      description: fail to get all class
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Fail to Get All class
+
+    #==================================#
+    #    DEFAULT RESPONSE
+    #==================================#
+    operationSuccess:
+      description: operation success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Operation Success
+    operationFailed:
+      description: operation failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Operation Failed
