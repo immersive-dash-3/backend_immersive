@@ -22,6 +22,7 @@ type MenteeResponse struct {
 	EmergencyStatus string `json:"emergency_status" form:"emergency_status"`
 	Major           string `json:"major" form:"major"`
 	Graduate        string `json:"graduate" form:"graduate"`
+	Institution     string `json:"institution" form:"institution"`
 	Class           class.ClassesResponse `json:"class,omitempty"`
 
 }
@@ -45,6 +46,7 @@ func EntityResponseById(mente mentee.MenteeEntity)MenteeResponse{
 		EmergencyStatus: mente.EmergencyStatus,
 		Major:           mente.Major,
 		Graduate:        mente.Graduate,
+		Institution: 	 mente.Institution,
 		Class: 			 class.ResponseToEntity(mente.Class),
 	}
 }

@@ -19,6 +19,7 @@ type MenteeRequest struct {
 	EmergencyStatus string `json:"emergency_status" form:"emergency_status"`
 	Major           string `json:"major" form:"major"`
 	Graduate        string `json:"graduate" form:"graduate"`
+	Institution     string `json:"institution" form:"institution"`
 }
 
 func RequestToEntity(mente MenteeRequest) mentee.MenteeEntity{
@@ -39,5 +40,6 @@ func RequestToEntity(mente MenteeRequest) mentee.MenteeEntity{
 		EmergencyStatus: mente.EmergencyStatus,
 		Major:           mente.Major,
 		Graduate:        mente.Graduate,
+		Institution: 	 mente.Institution,
 	}
 }

@@ -25,6 +25,7 @@ type MenteeModel struct {
 	EmergencyStatus string `gorm:"type:enum('Orang Tua','Kakek Nenek','Saudara dari Orang Tua');default:'Orang Tua';column:emergency_status"`
 	Major           string `gorm:"column:major"`
 	Graduate        string `gorm:"column:graduate"`
+	Institution     string `gorm:"column:institution"`
 	Class           class.ClassesModel `gorm:"foreignKey:ClassID"`
 }
 
@@ -41,6 +42,7 @@ func EntityToModel(mentee mentee.MenteeEntity)MenteeModel{
 		Category:        mentee.Category,
 		CurrentAddress:  mentee.CurrentAddress,
 		HomeAddress:     mentee.HomeAddress,
+		Institution: 	 mentee.Institution,
 		EmergencyName:   mentee.EmergencyName,
 		EmergencyPhone:  mentee.EmergencyPhone,
 		EmergencyStatus: mentee.EmergencyStatus,
@@ -73,6 +75,7 @@ func ModelToEntity(mente MenteeModel)mentee.MenteeEntity{
 		EmergencyStatus: mente.EmergencyStatus,
 		Major:           mente.Major,
 		Graduate:        mente.Graduate,
+		Institution: 	 mente.Institution,
 		Class: 			 class.ModelToEntity(mente.Class),
 	}
 }
