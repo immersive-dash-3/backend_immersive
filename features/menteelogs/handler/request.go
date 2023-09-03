@@ -7,6 +7,7 @@ type MenteeLogRequest struct {
 	UserID   uint   `json:"user_id" form:"user_id"`
 	Status   string `json:"status" form:"status"`
 	Log      string `json:"log" form:"log"`
+	Proof    string `json:"proof" form:"proof"`
 }
 
 func RequestToEntity(menteeLog MenteeLogRequest) menteelogs.MenteeLogEntity{
@@ -15,5 +16,6 @@ func RequestToEntity(menteeLog MenteeLogRequest) menteelogs.MenteeLogEntity{
 		UserID:    menteeLog.UserID,
 		Status:    menteeLog.Status,
 		Log:       menteeLog.Log,
+		Proof: 	   menteeLog.Proof,
 	}
 }

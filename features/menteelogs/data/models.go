@@ -14,6 +14,7 @@ type MenteeLogModel struct {
 	UserID   uint   `gorm:"column:user_id;not null"`
 	Log      string `gorm:"column:log;not null"`
 	Status   string `gorm:"column:status"`
+	Proof    string `gorm:"column:proof"`
 	Users    user.UserModel `gorm:"foreignKey:UserID"`
 	Mentee   mentee.MenteeModel `gorm:"foreignKey:MenteeID"` 
 }
@@ -24,6 +25,7 @@ func EntityToModel(menteeLog menteelogs.MenteeLogEntity)MenteeLogModel{
 		UserID:   menteeLog.UserID,
 		Log:      menteeLog.Log,
 		Status:   menteeLog.Status,
+		Proof: 	  menteeLog.Proof,
 		Users: 	  user.EntityToModel(menteeLog.Users),
 		Mentee:   mentee.EntityToModel(menteeLog.Mentee),
 	}
@@ -39,6 +41,7 @@ func ModelToEntity(menteeLog MenteeLogModel)menteelogs.MenteeLogEntity{
 		UserID:    menteeLog.UserID,
 		Status:    menteeLog.Status,
 		Log:       menteeLog.Log,
+		Proof: 	   menteeLog.Proof,
 		Users: 	   user.ModelToEntity(menteeLog.Users),
 		Mentee:    mentee.ModelToEntity(menteeLog.Mentee),
 	}

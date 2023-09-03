@@ -15,6 +15,7 @@ type MenteeLogEntity struct {
 	UserID 		uint 		`json:"user_id" form:"user_id"`
 	Status      string      `json:"status" form:"status"`
 	Log 		string 		`json:"log" form:"log"`
+	Proof       string		`json:"proof" form:"proof"`
 	Users       user.UserEntity `json:"users,omitempty"`
 	Mentee      mentee.MenteeEntity `json:"mentee,omitempty"`
 }
