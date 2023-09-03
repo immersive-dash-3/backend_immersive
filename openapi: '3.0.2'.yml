@@ -1,0 +1,17 @@
+openapi: '3.0.2'
+info:
+  title: API immersive-dash
+  description: The documentation of endpoints for immersive dashboard
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths:
+# users
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
+# mentee
+# log
+#class
