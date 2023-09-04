@@ -12,8 +12,13 @@ type MenteeLogEntity struct {
 	DeletedAt 	time.Time 	`json:"deleted_at,omitempty"`
 	MenteeID 	uint 		`json:"mentee_id" form:"mentee_id"`
 	UserID 		uint 		`json:"user_id" form:"user_id"`
-	StatusID      string      `json:"status_id" form:"status_id"`
+	Status      string      `json:"status" form:"status"`
 	Log 		string 		`json:"log" form:"log"`
 	Users       user.UserEntity `json:"users,omitempty"`
+}
 
+type MenteeLogDataInterface interface{
+
+}
+type MenteeLogServiceInterface interface{
 }

@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: API immersive-dash
   description: The documentation of endpoints for immersive dashboard
-  version: "1.0"
+  version: 1.0.0
 servers:
   - url: https://api.server.test/v1
 paths:
@@ -15,7 +15,7 @@ paths:
   # mentee
 
   # log
-  /logs:
+  /mentee/{mentee_id}/logs:
     post:
       tags:
         - Logs
@@ -23,6 +23,14 @@ paths:
       summary: insert class
       security:
         - JWTAuth: []
+      parameters:
+        - name: mentee_id
+          description: "id mentee"
+          required: true
+          in: path
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
@@ -58,7 +66,7 @@ paths:
                   message: "insert class failed, bad request"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
-  /mentee/{mentee_id}/logs:
+
     get:
       tags:
         - Logs

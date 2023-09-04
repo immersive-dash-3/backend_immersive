@@ -3,7 +3,6 @@ package data
 import (
 	class "immersive_project/klp3/features/classes/data"
 	mentees "immersive_project/klp3/features/mentee"
-	menteeLog "immersive_project/klp3/features/menteelogs/data"
 
 	"gorm.io/gorm"
 )
@@ -17,7 +16,7 @@ type Mentee struct {
 	PhoneNumber     string `gorm:"column:phone_number;not nul"`
 	Telegram        string `gorm:"column:telegram"`
 	ClassID         uint   `gorm:"column:class_id"`
-	StatusID        uint 	`gorm:"column:status"`
+	StatusID        uint 	`gorm:"column:status_id"`
 	Discord 		string `gorm:"column:discord"`
 	EducationType   string `gorm:"type:enum('Informatics','Non-Informatics');default:'Informatics';column:education_type"`
 	CurrentAddress  string `gorm:"column:current_address"`
@@ -30,7 +29,6 @@ type Mentee struct {
 	Institution     string `gorm:"column:institution"`
 	Class           class.Classes `gorm:"foreignKey:ClassID"`
 	Status          Status `gorm:"foreignKey:StatusID"`
-	MenteeLog       []menteeLog.MenteeLog `gorm:"foreignKey:MenteeID"`
 }
 
 type Status struct{
