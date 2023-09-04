@@ -2,6 +2,7 @@ package mentee
 
 import (
 	class "immersive_project/klp3/features/classes"
+	menteeLog "immersive_project/klp3/features/menteelogs"
 	"time"
 )
 
@@ -10,15 +11,16 @@ type MenteeEntity struct {
 	CreatedAt 		time.Time `json:"created_at,omitempty"`
 	UpdatedAt 		time.Time `json:"updated_at,omitempty"`
 	DeletedAt 		time.Time `json:"deleted_at,omitempty"`
-	FullName 		string `json:"full_name" form:"full_name"`
-	NickName 		string `json:"nick_name" form:"nick_name"`
+	FirstName 		string `json:"first_name" form:"first_name"`
+	LastName 		string `json:"last_name" form:"last_name"`
 	Gender 			string `json:"gender" form:"gender"`
 	Email 			string `json:"email" form:"email"`
 	PhoneNumber 	string `json:"phone_number" form:"phone_number"`
 	Telegram 		string `json:"telegram" form:"telegram"`
+	Discord 		string  `json:"discord" form:"discord"`
 	ClassID 		uint `json:"class_id" form:"class_id"`
-	Status 			string `json:"status" from:"status"`
-	Category 		string `json:"category" form:"category"`
+	StatusID 		uint `json:"status_id" from:"status_id"`
+	EducationType 	string `json:"education_type" form:"education_type"`
 	CurrentAddress 	string `json:"current_address" form:"current_address"`
 	HomeAddress 	string `json:"home_address" form:"home_address"`
 	EmergencyName 	string `json:"emergency_name" form:"emergency_name"`
@@ -28,4 +30,14 @@ type MenteeEntity struct {
 	Graduate 		string `json:"graduate" form:"graduate"`
 	Institution     string `json:"institution" form:"institution"`
 	Class           class.ClassessEntity `json:"class,omitempty"`
+	Status          StatusEntity `json:"status,omitempty"`
+	MenteeLog 		[]menteeLog.MenteeLogEntity `json:"logs,omitempty"`
+}
+
+type StatusEntity struct{
+	Id        		uint      `json:"id" form:"id"`
+	CreatedAt 		time.Time `json:"created_at,omitempty"`
+	UpdatedAt 		time.Time `json:"updated_at,omitempty"`
+	DeletedAt 		time.Time `json:"deleted_at,omitempty"`
+	Name            string	  `json:"name" form:"name"`
 }

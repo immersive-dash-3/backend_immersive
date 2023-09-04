@@ -5,17 +5,15 @@ import "immersive_project/klp3/features/menteelogs"
 type MenteeLogRequest struct {
 	MenteeID uint   `json:"mentee_id" form:"mentee_id"`
 	UserID   uint   `json:"user_id" form:"user_id"`
-	Status   string `json:"status" form:"status"`
+	StatusID   string `json:"status_id" form:"status_id"`
 	Log      string `json:"log" form:"log"`
-	Proof    string `json:"proof" form:"proof"`
 }
 
 func RequestToEntity(menteeLog MenteeLogRequest) menteelogs.MenteeLogEntity{
 	return menteelogs.MenteeLogEntity{
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		Status:    menteeLog.Status,
+		StatusID:  menteeLog.StatusID,
 		Log:       menteeLog.Log,
-		Proof: 	   menteeLog.Proof,
 	}
 }

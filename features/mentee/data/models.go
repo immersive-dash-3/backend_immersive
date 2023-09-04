@@ -2,86 +2,105 @@ package data
 
 import (
 	class "immersive_project/klp3/features/classes/data"
-	"immersive_project/klp3/features/mentee"
+	mentees "immersive_project/klp3/features/mentee"
+	menteeLog "immersive_project/klp3/features/menteelogs/data"
 
 	"gorm.io/gorm"
 )
 
-type MenteeModel struct {
+type Mentee struct {
 	gorm.Model
-	FullName        string `gorm:"column:full_name;not nul"`
-	NickName        string `gorm:"column:nick_name"`
-	Gender          string `gorm:"type:enum('male','female');default:'male';column:gender;not nul"`
+	FirstName        string `gorm:"column:first_name;not nul"`
+	LastName        string `gorm:"column:last_name"`
+	Gender          string `gorm:"column:gender;not nul"`
 	Email           string `gorm:"column:email;unique;not nul"`
 	PhoneNumber     string `gorm:"column:phone_number;not nul"`
 	Telegram        string `gorm:"column:telegram"`
 	ClassID         uint   `gorm:"column:class_id"`
-	Status          string `gorm:"column:status"`
-	Category        string `gorm:"type:enum('Informatics','Non-Informatics');default:'Informatics';column:category"`
+	StatusID        uint `gorm:"column:status"`
+	Discord 		string `gorm:"column:discord"`
+	EducationType   string `gorm:"type:enum('Informatics','Non-Informatics');default:'Informatics';column:education_type"`
 	CurrentAddress  string `gorm:"column:current_address"`
 	HomeAddress     string `gorm:"column:home_address"`
 	EmergencyName   string `gorm:"column:emergency_name;not nul"`
 	EmergencyPhone  string `gorm:"column:emergency_phone"`
-	EmergencyStatus string `gorm:"type:enum('Orang Tua','Kakek Nenek','Saudara dari Orang Tua');default:'Orang Tua';column:emergency_status"`
+	EmergencyStatus string `gorm:"column:emergency_status"`
 	Major           string `gorm:"column:major"`
 	Graduate        string `gorm:"column:graduate"`
 	Institution     string `gorm:"column:institution"`
-	Class           class.ClassesModel `gorm:"foreignKey:ClassID"`
+	Class           class.Classes `gorm:"foreignKey:ClassID"`
+	Status          Status `gorm:"foreignKey:StatusID"`
+	MenteeLog       []menteeLog.MenteeLog `gorm:"foreignKey:MenteeID"`
 }
 
-func EntityToModel(mentee mentee.MenteeEntity)MenteeModel{
-	return MenteeModel{
-		FullName:        mentee.FullName,
-		NickName:        mentee.NickName,
+type Status struct{
+	gorm.Model
+	Name            string	  `json:"name" form:"name"`
+}
+func StatusEntityToModel(status mentees.StatusEntity)Status{
+	return Status{
+		Name:  status.Name,
+	}
+}
+
+func StatusModelToEntity(status Status)mentees.StatusEntity{
+	return mentees.StatusEntity{
+		Name:  status.Name,
+	}
+}
+
+func EntityToModel(mentee mentees.MenteeEntity)Mentee{
+	return Mentee{
+		FirstName:       mentee.FirstName,
+		LastName:        mentee.LastName,
 		Gender:          mentee.Gender,
 		Email:           mentee.Email,
 		PhoneNumber:     mentee.PhoneNumber,
 		Telegram:        mentee.Telegram,
 		ClassID:         mentee.ClassID,
-		Status:          mentee.Status,
-		Category:        mentee.Category,
+		StatusID:        mentee.StatusID,
+		Discord:         mentee.Discord,
+		EducationType:   mentee.EducationType,
 		CurrentAddress:  mentee.CurrentAddress,
 		HomeAddress:     mentee.HomeAddress,
-		Institution: 	 mentee.Institution,
 		EmergencyName:   mentee.EmergencyName,
 		EmergencyPhone:  mentee.EmergencyPhone,
 		EmergencyStatus: mentee.EmergencyStatus,
 		Major:           mentee.Major,
 		Graduate:        mentee.Graduate,
-		Class: 			 class.EntityToModel(mentee.Class),
+		Institution:     mentee.Institution,
+		Class:           class.EntityToModel(mentee.Class),
+		Status:          StatusEntityToModel(mentee.Status),
 	}
 }
 
-
-func ModelToEntity(mente MenteeModel)mentee.MenteeEntity{
-	return mentee.MenteeEntity{
-		Id:              mente.ID,
-		CreatedAt:       mente.CreatedAt,
-		UpdatedAt:       mente.UpdatedAt,
-		DeletedAt:       mente.DeletedAt.Time,
-		FullName:        mente.FullName,
-		NickName:        mente.NickName,
-		Gender:          mente.Gender,
-		Email:           mente.Email,
-		PhoneNumber:     mente.PhoneNumber,
-		Telegram:        mente.Telegram,
-		ClassID:         mente.ClassID,
-		Status:          mente.Status,
-		Category:        mente.Category,
-		CurrentAddress:  mente.CurrentAddress,
-		HomeAddress:     mente.HomeAddress,
-		EmergencyName:   mente.EmergencyName,
-		EmergencyPhone:  mente.EmergencyPhone,
-		EmergencyStatus: mente.EmergencyStatus,
-		Major:           mente.Major,
-		Graduate:        mente.Graduate,
-		Institution: 	 mente.Institution,
-		Class: 			 class.ModelToEntity(mente.Class),
+func ModelToEntity(mentee Mentee)mentees.MenteeEntity{
+	return mentees.MenteeEntity{
+		FirstName:       mentee.FirstName,
+		LastName:        mentee.LastName,
+		Gender:          mentee.Gender,
+		Email:           mentee.Email,
+		PhoneNumber:     mentee.PhoneNumber,
+		Telegram:        mentee.Telegram,
+		ClassID:         mentee.ClassID,
+		StatusID:        mentee.StatusID,
+		Discord:         mentee.Discord,
+		EducationType:   mentee.EducationType,
+		CurrentAddress:  mentee.CurrentAddress,
+		HomeAddress:     mentee.HomeAddress,
+		EmergencyName:   mentee.EmergencyName,
+		EmergencyPhone:  mentee.EmergencyPhone,
+		EmergencyStatus: mentee.EmergencyStatus,
+		Major:           mentee.Major,
+		Graduate:        mentee.Graduate,
+		Institution:     mentee.Institution,
+		Class:           class.ModelToEntity(mentee.Class),
+		Status:          StatusModelToEntity(mentee.Status),
 	}
 }
 
-func ModelToEntityAll(mente []MenteeModel)[]mentee.MenteeEntity{
-	var menteeAll []mentee.MenteeEntity
+func ModelToEntityAll(mente []Mentee)[]mentees.MenteeEntity{
+	var menteeAll []mentees.MenteeEntity
 	for _,value:=range mente{
 		menteeAll=append(menteeAll, ModelToEntity(value))
 	}

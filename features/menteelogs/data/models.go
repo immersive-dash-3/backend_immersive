@@ -1,37 +1,32 @@
 package data
 
 import (
-	mentee "immersive_project/klp3/features/mentee/data"
 	"immersive_project/klp3/features/menteelogs"
 	user "immersive_project/klp3/features/users/data"
 
 	"gorm.io/gorm"
 )
 
-type MenteeLogModel struct {
+type MenteeLog struct {
 	gorm.Model
 	MenteeID uint   `gorm:"column:mentee_id;default:1;not null"`
 	UserID   uint   `gorm:"column:user_id;not null"`
 	Log      string `gorm:"column:log;not null"`
-	Status   string `gorm:"column:status"`
-	Proof    string `gorm:"column:proof"`
-	Users    user.UserModel `gorm:"foreignKey:UserID"`
-	Mentee   mentee.MenteeModel `gorm:"foreignKey:MenteeID"` 
+	StatusID   string `gorm:"column:status"`
+	Users    user.User `gorm:"foreignKey:UserID"`
 }
 
-func EntityToModel(menteeLog menteelogs.MenteeLogEntity)MenteeLogModel{
-	return MenteeLogModel{
+func EntityToModel(menteeLog menteelogs.MenteeLogEntity)MenteeLog{
+	return MenteeLog{
 		MenteeID: menteeLog.MenteeID,
 		UserID:   menteeLog.UserID,
 		Log:      menteeLog.Log,
-		Status:   menteeLog.Status,
-		Proof: 	  menteeLog.Proof,
+		StatusID:   menteeLog.StatusID,
 		Users: 	  user.EntityToModel(menteeLog.Users),
-		Mentee:   mentee.EntityToModel(menteeLog.Mentee),
 	}
 }
 
-func ModelToEntity(menteeLog MenteeLogModel)menteelogs.MenteeLogEntity{
+func ModelToEntity(menteeLog MenteeLog)menteelogs.MenteeLogEntity{
 	return menteelogs.MenteeLogEntity{
 		Id:        menteeLog.ID,
 		CreatedAt: menteeLog.CreatedAt,
@@ -39,17 +34,8 @@ func ModelToEntity(menteeLog MenteeLogModel)menteelogs.MenteeLogEntity{
 		DeletedAt: menteeLog.DeletedAt.Time,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		Status:    menteeLog.Status,
+		StatusID:  menteeLog.StatusID,
 		Log:       menteeLog.Log,
-		Proof: 	   menteeLog.Proof,
-		Users: 	   user.ModelToEntity(menteeLog.Users),
-		Mentee:    mentee.ModelToEntity(menteeLog.Mentee),
+		Users:     user.ModelToEntity(menteeLog.Users),
 	}
-}
-func ModelToEntityAll(menteeLog []MenteeLogModel)[]menteelogs.MenteeLogEntity{
-	var menteeLogs []menteelogs.MenteeLogEntity
-	for _,value:=range menteeLog{
-		menteeLogs=append(menteeLogs, ModelToEntity(value))
-	}
-	return menteeLogs
 }
