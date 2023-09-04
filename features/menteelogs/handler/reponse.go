@@ -11,7 +11,7 @@ type MenteeLogResponse struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	MenteeID  uint      `json:"mentee_id" form:"mentee_id"`
 	UserID    uint      `json:"user_id" form:"user_id"`
-	StatusID    string    `json:"status_id" form:"status_id"`
+	Status    string    `json:"status" form:"status"`
 	Log       string    `json:"log" form:"log"`
 	Users     user.UserResponse `json:"users,omitempty"`
 }
@@ -22,7 +22,7 @@ func EntityToResponse(menteeLog menteelogs.MenteeLogEntity)MenteeLogResponse{
 		CreatedAt: menteeLog.CreatedAt,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		StatusID:  menteeLog.StatusID,
+		Status:    menteeLog.Status,
 		Log:       menteeLog.Log,
 		Users: 	   user.UserEntityToResponse(menteeLog.Users),
 	}
