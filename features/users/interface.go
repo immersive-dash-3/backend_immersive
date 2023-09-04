@@ -7,7 +7,7 @@ type UserEntity struct {
 	CreatedAt 		time.Time 	`json:"created_at,omitempty"`
 	UpdatedAt 		time.Time 	`json:"updated_at,omitempty"`
 	DeletedAt 		time.Time 	`json:"deleted_at,omitempty"`
-	FullName 		string 		`json:"full_name" form:"full_name"`
+	Name 			string 		`json:"name" form:"name"`
 	Email 			string 		`json:"email" form:"email" validate:"required, email"`
 	Team 			string 		`json:"team" form:"team"`
 	Password 		string 		`json:"password" form:"password" validate:"required"`

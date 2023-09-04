@@ -1,38 +1,42 @@
 package handler
 
-import "immersive_project/klp3/features/mentee"
+import (
+	"immersive_project/klp3/features/mentee"
+)
 
 type MenteeRequest struct {
-	FullName        string `json:"full_name" form:"full_name"`
-	NickName        string `json:"nick_name" form:"nick_name"`
-	Gender          string `json:"gender" form:"gender"`
-	Email           string `json:"email" form:"email"`
-	PhoneNumber     string `json:"phone_number" form:"phone_number"`
-	Telegram        string `json:"telegram" form:"telegram"`
-	ClassID         uint   `json:"class_id" form:"class_id"`
-	Status          string `json:"status" from:"status"`
-	Category        string `json:"category" form:"category"`
-	CurrentAddress  string `json:"current_address" form:"current_address"`
-	HomeAddress     string `json:"home_address" form:"home_address"`
-	EmergencyName   string `json:"emergency_name" form:"emergency_name"`
-	EmergencyPhone  string `json:"emergency_phone" form:"emergency_phone"`
+	FirstName 		string `json:"first_name" form:"first_name"`
+	LastName 		string `json:"last_name" form:"last_name"`
+	Gender 			string `json:"gender" form:"gender"`
+	Email 			string `json:"email" form:"email"`
+	PhoneNumber 	string `json:"phone_number" form:"phone_number"`
+	Telegram 		string `json:"telegram" form:"telegram"`
+	Discord 		string  `json:"discord" form:"discord"`
+	ClassID 		uint `json:"class_id" form:"class_id"`
+	StatusID 		uint `json:"status_id" from:"status_id"`
+	EducationType 	string `json:"education_type" form:"education_type"`
+	CurrentAddress 	string `json:"current_address" form:"current_address"`
+	HomeAddress 	string `json:"home_address" form:"home_address"`
+	EmergencyName 	string `json:"emergency_name" form:"emergency_name"`
+	EmergencyPhone 	string `json:"emergency_phone" form:"emergency_phone"`
 	EmergencyStatus string `json:"emergency_status" form:"emergency_status"`
-	Major           string `json:"major" form:"major"`
-	Graduate        string `json:"graduate" form:"graduate"`
+	Major 			string `json:"major" form:"major"`
+	Graduate 		string `json:"graduate" form:"graduate"`
 	Institution     string `json:"institution" form:"institution"`
 }
 
 func RequestToEntity(mente MenteeRequest) mentee.MenteeEntity{
 	return mentee.MenteeEntity{
-		FullName:        mente.FullName,
-		NickName:        mente.NickName,
+		FirstName:       mente.FirstName,
+		LastName:        mente.LastName,
 		Gender:          mente.Gender,
 		Email:           mente.Email,
 		PhoneNumber:     mente.PhoneNumber,
 		Telegram:        mente.Telegram,
+		Discord:         mente.Discord,
 		ClassID:         mente.ClassID,
-		Status:          mente.Status,
-		Category:        mente.Category,
+		StatusID:        mente.StatusID,
+		EducationType:   mente.EducationType,
 		CurrentAddress:  mente.CurrentAddress,
 		HomeAddress:     mente.HomeAddress,
 		EmergencyName:   mente.EmergencyName,
@@ -40,6 +44,6 @@ func RequestToEntity(mente MenteeRequest) mentee.MenteeEntity{
 		EmergencyStatus: mente.EmergencyStatus,
 		Major:           mente.Major,
 		Graduate:        mente.Graduate,
-		Institution: 	 mente.Institution,
+		Institution:     mente.Institution,
 	}
 }

@@ -3,62 +3,77 @@ package handler
 import (
 	class "immersive_project/klp3/features/classes/handler"
 	"immersive_project/klp3/features/mentee"
+	menteeLog "immersive_project/klp3/features/menteelogs/handler"
 )
 type MenteeResponse struct {
-	Id              uint   `json:"id" form:"id"`
-	FullName        string `json:"full_name" form:"full_name"`
-	NickName        string `json:"nick_name" form:"nick_name"`
-	Gender          string `json:"gender" form:"gender"`
-	Email           string `json:"email" form:"email"`
-	PhoneNumber     string `json:"phone_number" form:"phone_number"`
-	Telegram        string `json:"telegram" form:"telegram"`
-	ClassID         uint   `json:"class_id" form:"class_id"`
-	Status          string `json:"status" from:"status"`
-	Category        string `json:"category" form:"category"`
-	CurrentAddress  string `json:"current_address" form:"current_address"`
-	HomeAddress     string `json:"home_address" form:"home_address"`
-	EmergencyName   string `json:"emergency_name" form:"emergency_name"`
-	EmergencyPhone  string `json:"emergency_phone" form:"emergency_phone"`
+	Id        		uint      `json:"id" form:"id"`
+	FirstName 		string `json:"first_name" form:"first_name"`
+	LastName 		string `json:"last_name" form:"last_name"`
+	Gender 			string `json:"gender" form:"gender"`
+	Email 			string `json:"email" form:"email"`
+	PhoneNumber 	string `json:"phone_number" form:"phone_number"`
+	Telegram 		string `json:"telegram" form:"telegram"`
+	Discord 		string  `json:"discord" form:"discord"`
+	ClassID 		uint `json:"class_id" form:"class_id"`
+	StatusID 		uint `json:"status_id" from:"status_id"`
+	EducationType 	string `json:"education_type" form:"education_type"`
+	CurrentAddress 	string `json:"current_address" form:"current_address"`
+	HomeAddress 	string `json:"home_address" form:"home_address"`
+	EmergencyName 	string `json:"emergency_name" form:"emergency_name"`
+	EmergencyPhone 	string `json:"emergency_phone" form:"emergency_phone"`
 	EmergencyStatus string `json:"emergency_status" form:"emergency_status"`
-	Major           string `json:"major" form:"major"`
-	Graduate        string `json:"graduate" form:"graduate"`
+	Major 			string `json:"major" form:"major"`
+	Graduate 		string `json:"graduate" form:"graduate"`
 	Institution     string `json:"institution" form:"institution"`
 	Class           class.ClassesResponse `json:"class,omitempty"`
+	Status          StatusResponse `json:"status,omitempty"`
+	MenteeLog 		[]menteeLog.MenteeLogResponse `json:"logs,omitempty"`
 
 }
 
+type StatusResponse struct{
+	Id 		uint `json:"id"`
+	Name 	string `json:"name"`
+}
+func StatusEntityToResponse(status mentee.StatusEntity)StatusResponse{
+	return StatusResponse{
+		Id: status.Id,
+		Name: status.Name,
+	}
+}
+
 func EntityResponseById(mente mentee.MenteeEntity)MenteeResponse{
+	var logs []menteeLog.MenteeLogResponse
+	for _,value:= range mente.MenteeLog{
+		logs = append(logs, menteeLog.EntityToResponse(value))
+	}
 	return MenteeResponse{
 		Id:              mente.Id,
-		FullName:        mente.FullName,
-		NickName:        mente.NickName,
-		Gender:          mente.Gender,
+		FirstName:       mente.FirstName,
+		LastName:        mente.LastName,
 		Email:           mente.Email,
 		PhoneNumber:     mente.PhoneNumber,
 		Telegram:        mente.Telegram,
+		Discord:         mente.Discord,
 		ClassID:         mente.ClassID,
-		Status:          mente.Status,
-		Category:        mente.Category,
-		CurrentAddress:  mente.CurrentAddress,
-		HomeAddress:     mente.HomeAddress,
-		EmergencyName:   mente.EmergencyName,
-		EmergencyPhone:  mente.EmergencyPhone,
-		EmergencyStatus: mente.EmergencyStatus,
+		StatusID:        mente.StatusID,
 		Major:           mente.Major,
 		Graduate:        mente.Graduate,
-		Institution: 	 mente.Institution,
-		Class: 			 class.ResponseToEntity(mente.Class),
+		Institution:     mente.Institution,
+		Class:           class.ResponseToEntity(mente.Class),
+		Status:          StatusEntityToResponse(mente.Status),
+		MenteeLog: 		 logs,
 	}
 }
 
 func EntityToResponseAll(mente mentee.MenteeEntity)MenteeResponse{
 	return MenteeResponse{
 		Id: 			 mente.Id,
-		FullName:        mente.FullName,
+		FirstName:       mente.FirstName,
 		Gender:          mente.Gender,
 		ClassID:         mente.ClassID,
-		Status:          mente.Status,
-		Category: 		 mente.Category,
+		Status:          StatusEntityToResponse(mente.Status),
+		EducationType: 	 mente.EducationType,
 		Class: 			 class.ResponseToEntity(mente.Class),
 	}
 }
