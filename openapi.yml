@@ -1,0 +1,413 @@
+openapi: '3.0.2'
+info:
+  title: API immersive-dash
+  description: The documentation of endpoints for immersive dashboard
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+tags:
+  - name: users
+  - name: mentee
+    description: operation about mentee
+paths:
+# users
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
+
+# mentee
+  /mentee:
+    get:
+      tags:
+        - mentee
+      summary: get mentee data
+      description: get mentee data by id
+      responses:
+        '200':
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/responseSuccessArray"
+        '500':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseInternalError"
+    post:
+      tags:
+        - mentee
+      summary: add mentee data
+      description: menambah data mentee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestBodyMentee'
+
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/responseCreate"
+        '400':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseBadRequest"
+        '500':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseInternalError"
+                  
+  
+  /mentee/{mentee_id}:
+    get:
+      tags:
+        - mentee
+      summary: get data mentee by id
+      description: get data mentee by id via query param
+      parameters:
+        - name: mentee_id
+          description: contain id of the mentee
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseSuccessObject'
+        '400':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseBadRequest"
+        '500':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseInternalError"
+    put:
+      tags:
+        - mentee
+      summary: update data mentee 
+      description: update data mentee
+      parameters:
+        - name: mentee_id
+          description: contain id of the mentee
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestBodyMentee'
+      responses:
+        '200':
+          description: halo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  "code":
+                    type: integer
+                    format: int64
+                    example: 200
+                  "message":
+                    type: string
+                    example: success update data mentee
+        '400':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseBadRequest"
+        '500':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseInternalError"
+    delete:
+      tags:
+        - mentee
+      summary: delete data mentee
+      description: delete data mentee by id using query param
+      parameters:
+        - name: mentee_id
+          description: contain id of the mentee
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  "code":
+                    type: integer
+                    format: int64
+                    example: 200
+                  "message":
+                    type: string
+                    example: success delete data
+        '400':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseBadRequest"
+        '500':
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseInternalError"
+
+      
+# log
+#class
+
+
+#==================================#
+# component
+#==================================#
+components:
+  #==================================#
+  # schemas
+  #==================================#
+  schemas:
+    #==================================#
+    # requestBodyMentee
+    #==================================#
+    requestBodyMentee:
+      required:
+        - "first_name"
+        - "last_name"
+        - "gender"
+        - "email"
+        - "status"
+      type: object
+      properties:
+        "first_name":
+          type: string
+          example: stephen
+        "last_name":
+          type: string
+          example: strange
+        "gender":
+          type: string
+          example: male
+        "email":
+          type: string
+          example: strange@mail.com
+        "phone_number":
+          type: string
+          example: "087654"
+        "telegram":
+          type: string
+          example: "@strange095"
+        "class_id":
+          type: integer
+          format: int64
+          example: 1
+        "status_id":
+          type: integer
+          format: int64
+          example: 1
+        "education_type":
+          type: string
+          example: "non-informatics"
+        "current_address":
+          type: string
+          example: jl. bleeker no 177A New York
+        "emergency_name":
+          type: string
+          example: wong
+        "emergency_phone":
+          type: string
+          example: "0876541"
+        "emergency_status":
+          type: string
+          example: "Saudara"
+        "major":
+          type: string
+          example: medical
+        "graduate":
+          type: string
+          example: 2016
+    #==================================#
+    # responseMantee
+    #==================================#
+    mentee:
+      type: object
+      properties:
+        "id":
+          type: integer
+          format: int64
+          example: 1
+        "first_name":
+          type: string
+          example: stephen
+        "last_name":
+          type: string
+          example: strange
+        "gender":
+          type: string
+          example: male
+        "email":
+          type: string
+          example: strange@mail.com
+        "phone_number":
+          type: string
+          example: "087654"
+        "telegram":
+          type: string
+          example: "@strange095"
+        "class_id":
+          type: integer
+          format: int64
+          example: 1
+        "status_id":
+          type: integer
+          format: int64
+          example: 1
+        "education_type":
+          type: string
+          example: "non-informatics"
+        "current_address":
+          type: string
+          example: jl. bleeker no 177A New York
+        "emergency_name":
+          type: string
+          example: wong
+        "emergency_phone":
+          type: string
+          example: "0876541"
+        "emergency_status":
+          type: string
+          example: "Saudara"
+        "major":
+          type: string
+          example: medical
+        "graduate":
+          type: string
+          example: 2016
+
+    responseSuccessObject:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 200
+        "message":
+          type: string
+          example: get data success
+        "data":
+          $ref: "#components/schemas/mentee"
+    
+    responseSuccessArray:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 200
+        "message":
+          type: string
+          example: get data success
+        "data":
+          $ref: "#components/schemas/responseManteeList" 
+      
+    responseCreate:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 201
+        "message":
+          type: string
+          example: operation success
+    
+    responseBadRequest:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 400
+        "message":
+          type: string
+          example: operation failed, data not valid/ data not found
+
+    responseInternalError:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 500
+        "message":
+          type: string
+          example: operation failed, internal server error
+
+    responseManteeList:
+      type: array
+      items:
+        properties:
+          "first_name":
+            type: string
+          "last_name":
+            type: string
+          "class":
+            type: string
+          "status":
+            type: string
+          "education_type":
+            type: string
+          "gender":
+            type: string
+      example:
+        - "first_name": tony
+          "last_name": stark
+          "class": BE 18
+          "status": interview
+          "education_type": "non-informatics"
+          "gender": male
+        - "first_name": tony
+          "last_name": stark
+          "class": BE 18
+          "status": interview
+          "education_type": "non-informatics"
+          "gender": male

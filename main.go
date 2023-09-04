@@ -10,7 +10,7 @@ import (
 
 func main() {
 	cfg := config.InitConfig()
-	mysql:=database.InitMysql(cfg)
+	mysql := database.InitMysql(cfg)
 	database.InittialMigration(mysql)
 
 	e := echo.New()
@@ -21,5 +21,4 @@ func main() {
 	}))
 	// router.InitRouter(mysql,e)
 	e.Logger.Fatal(e.Start(":80"))
-
 }
