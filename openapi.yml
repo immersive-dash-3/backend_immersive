@@ -7,11 +7,172 @@ servers:
   - url: https://api.server.test/v1
 paths:
   # users
-  /test:
+  /users:
     get:
+      tags:
+        - "Users"
+      summary: get all users
+      description: "mendapatkan seluruh data users berdasarkan query params"
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: page
+          description: "untuk menentukan page ke berapa"
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: itemsPerPage
+          description: "jumlah users yang ditampilan per halaman"
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: searchName
+          description: "keyword untuk searching berdasarkan nama"
+          required: false
+          in: query
+          schema:
+            type: string
       responses:
         "200":
-          description: OK
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: HTTP status code (e.g., 200 for success).
+                    example: 200
+                  message:
+                    type: string
+                    description: A human-readable message describing the result.
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/user'
+        "400":
+          description: bad request params
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: HTTP status code (e.g., 200 for success).
+                    example: 400
+                  message:
+                    type: string
+                    description: A human-readable message describing the result.
+                    example: bad request query params
+                  data:
+                    type: array
+                    items: {}
+                    example: []
+        "500":
+          $ref: "#/components/responses/responseFailedInternalArray"
+    post:
+      tags:
+        - "Users"
+      summary: create a new user
+      description: membuat user baru hanya untuk manager
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_user"
+      responses:
+        "200":
+          $ref: "#/components/responses/responseSuccessCreate"
+        "400":
+          $ref: "#/components/responses/responseFailedRequest"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+    put:
+      tags:
+        - "Users"
+      summary: update data user
+      description: update data user sendiri
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_user"
+      responses:
+        "200":
+          $ref: "#/components/responses/responseSuccessUpdate"
+        "400":
+          $ref: "#/components/responses/responseFailedRequest"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+
+  /users/{user_id}:
+    put:
+      tags:
+        - "Users"
+      summary: update data user for spesific id
+      description: update data user untuk spesifik id oleh manager
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: user_id
+          description: "identifier user"
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_user"
+      responses:
+        "200":
+          $ref: "#/components/responses/responseSuccessUpdate"
+        "400":
+          $ref: "#/components/responses/responseFailedRequest"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+    delete:
+      tags:
+        - "Users"
+      summary: delete data user for spesific id
+      description: delete data user untuk spesifik id oleh manager
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: user_id
+          description: "identifier user"
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          $ref: "#/components/responses/responseSuccess"
+        "404":
+          $ref: "#/components/responses/responseNotFound"
+        "500":
+          $ref: "#/components/responses/responseFailedInternal"
+
+
+
+
+
+
+
+
   # mentee
 
   # log
@@ -297,7 +458,7 @@ paths:
                       name: "FE 14"
 
         "400":
-          $ref: "#/components/responses/responseFailed"
+          $ref: "#/components/responses/responseFailedRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
   /classes/{class_id}:
@@ -457,14 +618,17 @@ components:
             type: object
             properties:
               code:
-                type: number
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
                 example: 200
-              status:
-                type: string
-                example: success
               message:
                 type: string
-                example: Successful Operation
+                description: A human-readable message describing the result.
+                example: success
+              data:
+                type: object
+                example: null
+
     responseSuccessCreate:
       description: Successful created Operation
       content:
@@ -473,15 +637,37 @@ components:
             type: object
             properties:
               code:
-                type: number
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
                 example: 201
-              status:
-                type: string
-                example: success
               message:
                 type: string
-                example: Successful created
-    responseFailed:
+                description: A human-readable message describing the result.
+                example: created success
+              data:
+                type: object
+                example: null
+
+    responseSuccessUpdate:
+      description: Successful Update Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
+                example: 204
+              message:
+                type: string
+                description: A human-readable message describing the result.
+                example: updated success
+              data:
+                type: object
+                example: null
+
+    responseFailedRequest:
       description: request failed
       content:
         application/json:
@@ -489,14 +675,56 @@ components:
             type: object
             properties:
               code:
-                type: number
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
                 example: 400
-              status:
-                type: string
-                example: failed
               message:
                 type: string
-                example: Bad Request
+                description: A human-readable message describing the result.
+                example: bad request
+              data:
+                type: object
+                example: null
+
+    responseNotFound:
+      description: resouse was not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
+                example: 404
+              message:
+                type: string
+                description: A human-readable message describing the result.
+                example: id is not found
+              data:
+                type: object
+                example: null
+
+    responseFailedInternalArray:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
+                example: 500
+              message:
+                type: string
+                description: A human-readable message describing the result.
+                example: internal server error
+              data:
+                type: array
+                items: {}
+                example: []
+
     responseFailedInternal:
       description: internal server error
       content:
@@ -505,11 +733,75 @@ components:
             type: object
             properties:
               code:
-                type: number
+                type: integer
+                description: HTTP status code (e.g., 200 for success).
                 example: 500
-              status:
-                type: string
-                example: failed
               message:
                 type: string
-                example: Internal Server Error
+                description: A human-readable message describing the result.
+                example: internal server error
+              data:
+                type: object
+                example: null
+    #==================================#
+    #    schema for USERS endpoint
+    #==================================#
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: "budi kosasi"
+        email:
+          type: string
+          example: "budi@gmail.com"
+        team:
+          type: string
+          example: "People"
+        role:
+          type: string
+          example: "Admin"
+        status:
+          type: string
+          example: "Active"
+    create_user:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "budi kosasi"
+        email:
+          type: string
+          example: "budi@gmail.com"
+        password:
+          type: string
+          example: "inipassword"
+        team:
+          type: string
+          example: "People"
+        role:
+          type: string
+          example: "Admin"
+        status:
+          type: string
+          example: "Active"
+    update_user:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "budi kosasi update"
+        email:
+          type: string
+          example: "budiu[date@gmail.com"
+        password:
+          type: string
+          example: "inipasswordupdate"
+
+
+
+
