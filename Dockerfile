@@ -10,8 +10,8 @@ COPY ./ /app
 
 RUN go mod tidy
 
-# create executable file with name "immersive_dash"
-RUN go build -o immersive_dash
+# create executable file with name "immersive"
+RUN go build -o immersive
 
 # run executable file
-CMD ["./immersive_dash"]
+CMD ["./immersive"]
