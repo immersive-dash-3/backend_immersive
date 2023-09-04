@@ -5,7 +5,13 @@ import (
 )
 
 type ClassesRequest struct {
-	Name 			string 					`json:"name" form:"name"`
+	Name 			string 					`json:"name" form:"name" validate:"required"`
+}
+
+func EntityToRequest(class classes.ClassessEntity)ClassesRequest{
+	return ClassesRequest{
+		Name: class.Name,
+	}
 }
 
 func RequestToEntity(class ClassesRequest) classes.ClassessEntity{
