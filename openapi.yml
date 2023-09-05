@@ -1,16 +1,22 @@
-openapi: "3.0.2"
+openapi: '3.0.2'
 info:
   title: API immersive-dash
   description: The documentation of endpoints for immersive dashboard
-  version: 1.0.0
+  version: '1.0'
 servers:
   - url: https://api.server.test/v1
+tags:
+  - name: Users
+  - name: Mentee
+    description: operation about mentee
+  - name: Class
+  - name: Logs
 paths:
-  # users
+# users
   /users:
     get:
       tags:
-        - "Users"
+        - Users
       summary: get all users
       description: "mendapatkan seluruh data users berdasarkan query params"
       security:
@@ -74,10 +80,10 @@ paths:
                     items: {}
                     example: []
         "500":
-          $ref: "#/components/responses/responseFailedInternalArray"
+          $ref: "#/components/responses/responseFailedInternal"
     post:
       tags:
-        - "Users"
+        - Users
       summary: create a new user
       description: membuat user baru hanya untuk manager
       security:
@@ -92,12 +98,12 @@ paths:
         "200":
           $ref: "#/components/responses/responseSuccessCreate"
         "400":
-          $ref: "#/components/responses/responseFailedRequest"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
     put:
       tags:
-        - "Users"
+        - Users
       summary: update data user
       description: update data user sendiri
       security:
@@ -110,16 +116,16 @@ paths:
               $ref: "#/components/schemas/update_user"
       responses:
         "200":
-          $ref: "#/components/responses/responseSuccessUpdate"
+          $ref: "#/components/responses/responseSuccess"
         "400":
-          $ref: "#/components/responses/responseFailedRequest"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
 
   /users/{user_id}:
     put:
       tags:
-        - "Users"
+        - Users
       summary: update data user for spesific id
       description: update data user untuk spesifik id oleh manager
       security:
@@ -139,14 +145,15 @@ paths:
               $ref: "#/components/schemas/create_user"
       responses:
         "200":
-          $ref: "#/components/responses/responseSuccessUpdate"
+          description: OK
+          $ref: "#/components/responses/responseSuccess"
         "400":
-          $ref: "#/components/responses/responseFailedRequest"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
     delete:
       tags:
-        - "Users"
+        - Users
       summary: delete data user for spesific id
       description: delete data user untuk spesifik id oleh manager
       security:
@@ -166,10 +173,152 @@ paths:
         "500":
           $ref: "#/components/responses/responseFailedInternal"
 
+# mentee
+  /mentee:
+    get:
+      tags:
+        - Mentee
+      summary: get mentee data
+      description: get mentee data by id
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: page
+          description: "untuk menentukan page ke berapa"
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: itemsPerPage
+          description: "jumlah users yang ditampilan per halaman"
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: searchName
+          description: "keyword untuk searching berdasarkan nama"
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/responseSuccessArray"
+        '404':
+          $ref: "#/components/responses/responseNotFound"
+        '500':
+          $ref: "#/components/responses/responseFailedInternal"
 
+    post:
+      tags:
+        - Mentee
+      summary: add mentee data
+      description: menambah data mentee
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestBodyMentee'
 
+      responses:
+        '201':
+          $ref: "#/components/responses/responseSuccessCreate"
+        '400':
+          $ref: "#/components/responses/responseBadRequest"
+        '500':
+          $ref: "#/components/responses/responseFailedInternal"
+                  
+  /mentee/{mentee_id}:
+    get:
+      tags:
+        - Mentee
+      summary: get data mentee by id
+      description: get data mentee by id via query param
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentee_id
+          description: contain id of the mentee
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseSuccessObject'
+        '400':
+          $ref: "#/components/responses/responseBadRequest"
+        '404':
+          $ref: "#/components/responses/responseNotFound"
+        '500':
+          $ref: "#/components/responses/responseFailedInternal"
 
+    put:
+      tags:
+        - Mentee
+      summary: update data mentee 
+      description: update data mentee
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentee_id
+          description: contain id of the mentee
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestBodyMentee'
+      responses:
+        '200':
+          $ref: "#/components/responses/responseSuccess"
+        '400':
+          $ref: "#/components/responses/responseBadRequest"
+        '500':
+          $ref: "#/components/responses/responseFailedInternal"
 
+    delete:
+      tags:
+        - Mentee
+      summary: delete data mentee
+      description: delete data mentee by id using query param
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentee_id
+          description: contain id of the mentee
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/responseSuccess"
+        '400':
+          $ref: "#/components/responses/responseBadRequest"
+        '500':
+          $ref: "#/components/responses/responseFailedInternal"
 
 
 
@@ -210,21 +359,11 @@ paths:
                 type: object
                 example:
                   code: 201
-                  status: "success"
                   message: "insert berhasil"
         "400":
-          description: insert gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "insert class failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
-
     get:
       tags:
         - Logs
@@ -249,7 +388,6 @@ paths:
                 type: object
                 example:
                   code: 200
-                  status: "success"
                   message: "get success"
                   data:
                     mentee:
@@ -290,17 +428,8 @@ paths:
                             name: "interview"
                           created_at: "2023-06-25 15:58:07.703"
                           log: "saya melihat perkembangan yang sangat pesat di unit ini"
-
         "400":
-          description: get all logs failed.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "get class failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
   /logs/{logs_id}:
@@ -337,22 +466,13 @@ paths:
                 type: object
                 example:
                   code: 200
-                  status: "success"
                   message: "edit berhasil"
                   data:
                     id: 1
                     status_id: 2
                     logs: "sebenarnya sudah cukup baik, mungkin perlu ada beberapa peningkatan lagi"
         "400":
-          description: edit gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "update logs failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
     delete:
@@ -379,21 +499,12 @@ paths:
                 type: object
                 example:
                   code: 200
-                  status: "success"
                   message: "delete berhasil"
+                  data: null
         "400":
-          description: edit gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "delete logs failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
-  #class
 
   /classes:
     post:
@@ -424,17 +535,10 @@ paths:
                   message: "insert berhasil"
 
         "400":
-          description: insert gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "insert class failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
+
     get:
       tags:
         - Class
@@ -444,7 +548,7 @@ paths:
         - JWTAuth: []
       responses:
         "200":
-          description: A list of users
+          description: success
           content:
             application/json:
               schema:
@@ -460,11 +564,11 @@ paths:
                       name: "BE 13"
                     - id: 3
                       name: "FE 14"
-
         "400":
-          $ref: "#/components/responses/responseFailedRequest"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
+
   /classes/{class_id}:
     put:
       tags:
@@ -502,17 +606,10 @@ paths:
                   message: "edit berhasil"
 
         "400":
-          description: edit gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "update class failed, bad request"
+          $ref: "#/components/responses/responseFailedInternal"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
+
     delete:
       tags:
         - Class
@@ -540,17 +637,10 @@ paths:
                   status: "success"
                   message: "delete berhasil"
         "400":
-          description: edit gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "delete class failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
+    
     get:
       tags:
         - Class
@@ -581,119 +671,79 @@ paths:
                     id: 3
                     name: "FE 12"
         "400":
-          description: get failed.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  code: 400
-                  status: "failed"
-                  message: "get class by id failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
 
 #==================================#
-#    COMPONENT
+# component
 #==================================#
 components:
-  #==================================#
-  #    JWT
-  #==================================#
   securitySchemes:
     JWTAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description: "use Token"
-  #==================================#
-  #    PARAMETERS
-  #==================================#
-  # parameters:
-  #   dataBook:
-  #     name: "dataBook"
-  #     in: query
-
+  
   responses:
-    #==================================#
-    #    RESPONSE FOR GENERAL REQUEST
-    #==================================#
     responseSuccess:
-      description: Successful Operation
+      description: failed
       content:
         application/json:
           schema:
             type: object
             properties:
-              code:
+              "code":
                 type: integer
-                description: HTTP status code (e.g., 200 for success).
+                format: int64
                 example: 200
-              message:
+              "message":
                 type: string
                 description: A human-readable message describing the result.
                 example: success
-              data:
+              "data":
                 type: object
                 example: null
 
     responseSuccessCreate:
-      description: Successful created Operation
+      description: success
       content:
         application/json:
           schema:
             type: object
             properties:
-              code:
+              "code":
                 type: integer
-                description: HTTP status code (e.g., 200 for success).
+                format: int64
                 example: 201
-              message:
+              "message":
                 type: string
                 description: A human-readable message describing the result.
-                example: created success
-              data:
+                example: created
+              "data":
                 type: object
                 example: null
 
-    responseSuccessUpdate:
-      description: Successful Update Operation
+    responseBadRequest:
+      description: failed
       content:
         application/json:
           schema:
             type: object
             properties:
-              code:
+              "code":
                 type: integer
-                description: HTTP status code (e.g., 200 for success).
-                example: 204
-              message:
-                type: string
-                description: A human-readable message describing the result.
-                example: updated success
-              data:
-                type: object
-                example: null
-
-    responseFailedRequest:
-      description: request failed
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: HTTP status code (e.g., 200 for success).
+                format: int64
                 example: 400
-              message:
+              "message":
                 type: string
                 description: A human-readable message describing the result.
-                example: bad request
-              data:
+                example: operation failed, request resource not valid
+              "data":
                 type: object
                 example: null
-
+              
     responseNotFound:
       description: resouse was not found
       content:
@@ -701,60 +751,43 @@ components:
           schema:
             type: object
             properties:
-              code:
+              "code":
                 type: integer
                 description: HTTP status code (e.g., 200 for success).
                 example: 404
-              message:
+              "message":
                 type: string
                 description: A human-readable message describing the result.
-                example: id is not found
-              data:
+                example: operation failed, resource not found
+              "data":
                 type: object
                 example: null
-
-    responseFailedInternalArray:
-      description: internal server error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: HTTP status code (e.g., 200 for success).
-                example: 500
-              message:
-                type: string
-                description: A human-readable message describing the result.
-                example: internal server error
-              data:
-                type: array
-                items: {}
-                example: []
 
     responseFailedInternal:
-      description: internal server error
+      description: failed
       content:
         application/json:
           schema:
             type: object
             properties:
-              code:
+              "code":
                 type: integer
-                description: HTTP status code (e.g., 200 for success).
+                format: int64
                 example: 500
-              message:
+              "message":
                 type: string
-                description: A human-readable message describing the result.
-                example: internal server error
-              data:
+                example: operation failed, internal server error
+              "data":
                 type: object
                 example: null
+              
+  #==================================#
+  # schemas
+  #==================================#
+  schemas:
     #==================================#
     #    schema for USERS endpoint
     #==================================#
-  schemas:
     user:
       type: object
       properties:
@@ -809,7 +842,192 @@ components:
         password:
           type: string
           example: "inipasswordupdate"
+    #==================================#
+    # requestBodyMentee
+    #==================================#
+    requestBodyMentee:
+      required:
+        - "first_name"
+        - "last_name"
+        - "gender"
+        - "email"
+        - "status"
+      type: object
+      properties:
+        "first_name":
+          type: string
+          example: stephen
+        "last_name":
+          type: string
+          example: strange
+        "gender":
+          type: string
+          example: male
+        "email":
+          type: string
+          example: strange@mail.com
+        "phone_number":
+          type: string
+          example: "087654"
+        "telegram":
+          type: string
+          example: "@strange095"
+        "class_id":
+          type: integer
+          format: int64
+          example: 1
+        "status_id":
+          type: integer
+          format: int64
+          example: 1
+        "education_type":
+          type: string
+          example: "non-informatics"
+        "current_address":
+          type: string
+          example: jl. bleeker no 177A New York
+        "emergency_name":
+          type: string
+          example: wong
+        "emergency_phone":
+          type: string
+          example: "0876541"
+        "emergency_status":
+          type: string
+          example: "Saudara"
+        "major":
+          type: string
+          example: medical
+        "graduate":
+          type: string
+          example: 2016
+    #==================================#
+    # responseMantee
+    #==================================#
+    mentee:
+      type: object
+      properties:
+        "id":
+          type: integer
+          format: int64
+          example: 1
+        "first_name":
+          type: string
+          example: stephen
+        "last_name":
+          type: string
+          example: strange
+        "gender":
+          type: string
+          example: male
+        "email":
+          type: string
+          example: strange@mail.com
+        "phone_number":
+          type: string
+          example: "087654"
+        "telegram":
+          type: string
+          example: "@strange095"
+        "class_id":
+          type: integer
+          format: int64
+          example: 1
+        "status_id":
+          type: integer
+          format: int64
+          example: 1
+        "education_type":
+          type: string
+          example: "non-informatics"
+        "current_address":
+          type: string
+          example: jl. bleeker no 177A New York
+        "emergency_name":
+          type: string
+          example: wong
+        "emergency_phone":
+          type: string
+          example: "0876541"
+        "emergency_status":
+          type: string
+          example: "Saudara"
+        "major":
+          type: string
+          example: medical
+        "graduate":
+          type: string
+          example: 2016
 
+    class:
+      type: object
+      properties:
+        "id":
+          type: integer
+          format: int64
+          example: 1
+        "name":
+          type: string
+          example: FE 15
+    
+    status:
+      type: object
+      properties:
+        "id":
+          type: integer
+          format: int64
+          example: 1
+        "name":
+          type: string
+          example: "interview"
 
+    responseSuccessObject:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 200
+        "message":
+          type: string
+          example: get data success
+        "data":
+          $ref: "#components/schemas/mentee"
+    
+    responseSuccessArray:
+      type: object
+      properties:
+        "code":
+          type: integer
+          format: int64
+          example: 200
+        "message":
+          type: string
+          example: get data success
+        "data":
+          type: array
+          $ref: "#components/schemas/ManteeArray" 
 
-
+    ManteeArray:
+      items:
+        properties:
+          "id":
+            type: integer
+            format: int64
+            example: 1
+          "first_name":
+            type: string
+            example: tony
+          "last_name":
+            type: string
+            example: stark
+          "class":
+            $ref: "#components/schemas/class"
+          "status":
+            $ref: "#components/schemas/status"
+          "education_type":
+            type: string
+            example: non_informatics
+          "gender":
+            type: string
+            example: male
