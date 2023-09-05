@@ -353,7 +353,7 @@ paths:
               schema:
                 type: object
                 example:
-                  status: "success"
+                  code: 201
                   message: "insert berhasil"
                   data:
                     id: 3
@@ -361,14 +361,7 @@ paths:
                     status_id: 2
                     logs: "sebenarnya sudah cukup baik, mungkin perlu ada beberapa peningkatan lagi"
         "400":
-          description: insert gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: "failed"
-                  message: "insert class failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
     get:
@@ -394,7 +387,7 @@ paths:
               schema:
                 type: object
                 example:
-                  status: "success"
+                  code: 200
                   message: "get success"
                   data:
                     mentee:
@@ -436,14 +429,7 @@ paths:
                           created_at: "2023-06-25 15:58:07.703"
                           log: "saya melihat perkembangan yang sangat pesat di unit ini"
         "400":
-          description: get all logs failed.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: "failed"
-                  message: "get class failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
   /logs/{logs_id}:
@@ -479,21 +465,14 @@ paths:
               schema:
                 type: object
                 example:
-                  status: "success"
+                  code: 200
                   message: "edit berhasil"
                   data:
                     id: 1
                     status_id: 2
                     logs: "sebenarnya sudah cukup baik, mungkin perlu ada beberapa peningkatan lagi"
         "400":
-          description: edit gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: "failed"
-                  message: "update logs failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
     delete:
@@ -519,17 +498,11 @@ paths:
               schema:
                 type: object
                 example:
-                  status: "success"
+                  code: 200
                   message: "delete berhasil"
+                  data: null
         "400":
-          description: edit gagal.
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: "failed"
-                  message: "delete logs failed, bad request"
+          $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
 
