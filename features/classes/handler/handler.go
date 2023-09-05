@@ -38,12 +38,15 @@ func (handler *ClassHandler)GetAll(c echo.Context)error{
 	if errPageItem!=nil{
 		return c.JSON(http.StatusNotFound,helper.WebResponse(404,"id not page item",nil))
 	}
-	data,err:=handler.classHandler.GetAll(Page,PageItem)
+	bolean,data,err:=handler.classHandler.GetAll(Page,PageItem)
 	if err != nil{
 		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,err.Error(),nil))
 	}
 	response:=ResponseToEntityAll(data)
-	return c.JSON(http.StatusOK,helper.WebResponse(200,"success get all class",response))
+	return c.JSON(http.StatusOK,helper.WebResponse(200,"success get all class",map[string]any{
+		"bolean": bolean,
+		"data":response,
+	}))
 }
 
 func (handler *ClassHandler)Edit(c echo.Context)error{
