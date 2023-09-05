@@ -20,9 +20,9 @@ type ClassDataInterface interface{
 	Delete(id uint)(error)
 }
 type ClassServiceInterface interface{
-	Add(input ClassessEntity)(ClassessEntity,error)
+	Add(input ClassessEntity)(error)
 	GetAll()([]ClassessEntity,error)
-	Edit(id uint,input ClassessEntity)(ClassessEntity,error)
+	Edit(id uint,input ClassessEntity)(error)
 	GetById(id uint)(ClassessEntity,error)
 	Delete(id uint)error
 }

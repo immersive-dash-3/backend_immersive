@@ -3,7 +3,6 @@ package handler
 import (
 	class "immersive_project/klp3/features/classes/handler"
 	"immersive_project/klp3/features/mentee"
-	menteeLog "immersive_project/klp3/features/menteelogs/handler"
 )
 type MenteeResponse struct {
 	Id        		uint      `json:"id" form:"id"`
@@ -27,7 +26,6 @@ type MenteeResponse struct {
 	Institution     string `json:"institution" form:"institution"`
 	Class           class.ClassesResponse `json:"class,omitempty"`
 	Status          StatusResponse `json:"status,omitempty"`
-	MenteeLog 		[]menteeLog.MenteeLogResponse `json:"logs,omitempty"`
 
 }
 
@@ -39,30 +37,6 @@ func StatusEntityToResponse(status mentee.StatusEntity)StatusResponse{
 	return StatusResponse{
 		Id: status.Id,
 		Name: status.Name,
-	}
-}
-
-func EntityResponseById(mente mentee.MenteeEntity)MenteeResponse{
-	var logs []menteeLog.MenteeLogResponse
-	for _,value:= range mente.MenteeLog{
-		logs = append(logs, menteeLog.EntityToResponse(value))
-	}
-	return MenteeResponse{
-		Id:              mente.Id,
-		FirstName:       mente.FirstName,
-		LastName:        mente.LastName,
-		Email:           mente.Email,
-		PhoneNumber:     mente.PhoneNumber,
-		Telegram:        mente.Telegram,
-		Discord:         mente.Discord,
-		ClassID:         mente.ClassID,
-		StatusID:        mente.StatusID,
-		Major:           mente.Major,
-		Graduate:        mente.Graduate,
-		Institution:     mente.Institution,
-		Class:           class.ResponseToEntity(mente.Class),
-		Status:          StatusEntityToResponse(mente.Status),
-		MenteeLog: 		 logs,
 	}
 }
 

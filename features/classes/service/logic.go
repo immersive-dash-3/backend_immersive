@@ -32,16 +32,13 @@ func (service *ClassService) GetById(id uint) (classes.ClassessEntity, error) {
 }
 
 // Edit implements classes.ClassServiceInterface.
-func (service *ClassService) Edit(id uint, input classes.ClassessEntity) (classes.ClassessEntity, error) {
-	id, err := service.classService.Update(id, input)
+func (service *ClassService) Edit(id uint, input classes.ClassessEntity) (error) {
+	_,err := service.classService.Update(id, input)
 	if err != nil {
-		return classes.ClassessEntity{}, err
+		return err
 	}
-	data, errGet := service.classService.SelectById(id)
-	if errGet != nil {
-		return classes.ClassessEntity{}, errGet
-	}
-	return data, nil
+
+	return nil
 }
 
 // GetAll implements classes.ClassServiceInterface.
@@ -54,22 +51,19 @@ func (service *ClassService) GetAll() ([]classes.ClassessEntity, error) {
 }
 
 // Add implements classes.ClassServiceInterface.
-func (service *ClassService) Add(input classes.ClassessEntity) (classes.ClassessEntity, error) {
+func (service *ClassService) Add(input classes.ClassessEntity) (error) {
 	inputValidate := handlers.EntityToRequest(input)
 	errValidate := service.validate.Struct(&inputValidate)
 	if errValidate != nil {
-		return classes.ClassessEntity{}, errors.New("nama class harus diisi")
+		return errors.New("nama class harus diisi")
 	}
 	inputEntity := handlers.RequestToEntity(inputValidate)
-	id, errInsert := service.classService.Insert(inputEntity)
+	_, errInsert := service.classService.Insert(inputEntity)
 	if errInsert != nil {
-		return classes.ClassessEntity{}, errInsert
+		return errInsert
 	}
-	data, errGet := service.classService.SelectById(id)
-	if errGet != nil {
-		return classes.ClassessEntity{}, errGet
-	}
-	return data, nil
+
+	return nil
 }
 
 func New(class classes.ClassDataInterface) classes.ClassServiceInterface {

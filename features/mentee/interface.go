@@ -2,7 +2,6 @@ package mentee
 
 import (
 	class "immersive_project/klp3/features/classes"
-	menteeLog "immersive_project/klp3/features/menteelogs"
 	"time"
 )
 
@@ -31,7 +30,6 @@ type MenteeEntity struct {
 	Institution     string `json:"institution" form:"institution"`
 	Class           class.ClassessEntity `json:"class,omitempty"`
 	Status          StatusEntity `json:"status,omitempty"`
-	MenteeLog 		[]menteeLog.MenteeLogEntity `json:"logs,omitempty"`
 }
 
 type StatusEntity struct{
