@@ -19,12 +19,11 @@ func (handler *ClassHandler)Add(c echo.Context)error{
 		return c.JSON(http.StatusBadGateway,helper.WebResponse(400, "error bind data", nil))
 	}
 	inputEntity:= RequestToEntity(input)
-	data,errAdd:=handler.classHandler.Add(inputEntity)
+	errAdd:=handler.classHandler.Add(inputEntity)
 	if errAdd != nil{
 		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,errAdd.Error(),nil))
 	}
-	output:=ResponseToEntity(data)
-	return c.JSON(http.StatusCreated,helper.WebResponse(201,"success insert class",output))
+	return c.JSON(http.StatusCreated,helper.WebResponse(201,"success insert class",nil))
 }
 
 func (handler *ClassHandler)GetAll(c echo.Context)error{
@@ -48,12 +47,11 @@ func (handler *ClassHandler)Edit(c echo.Context)error{
 		return c.JSON(http.StatusBadGateway,helper.WebResponse(400, "error bind data", nil))
 	}
 	inputEntity:= RequestToEntity(input)
-	data,err:=handler.classHandler.Edit(uint(idConv),inputEntity)
+	err:=handler.classHandler.Edit(uint(idConv),inputEntity)
 	if err!= nil{
 		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,err.Error(),nil))
 	}
-	output:=ResponseToEntity(data)
-	return c.JSON(http.StatusOK,helper.WebResponse(200,"success update class",output))
+	return c.JSON(http.StatusOK,helper.WebResponse(200,"success update class",nil))
 }
 
 func (handler *ClassHandler)GetById(c echo.Context)error{
