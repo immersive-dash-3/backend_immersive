@@ -11,15 +11,41 @@ type MenteeLogData struct {
 	db *gorm.DB
 }
 
+// Delete implements menteelogs.MenteeLogDataInterface.
+func (repo *MenteeLogData) Delete(idLog uint) error {
+	var input MenteeLog
+	tx:=repo.db.Delete(&input,idLog)
+	if tx.Error != nil {
+		return errors.New("failed delete log")
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("row not affected")
+	}
+	return nil
+}
+
+// Update implements menteelogs.MenteeLogDataInterface.
+func (repo *MenteeLogData) Update(idLog uint, input menteelogs.MenteeLogEntity) error {
+	inputLog := EntityToModel(input)
+	tx := repo.db.Model(&MenteeLog{}).Where("id=?", idLog).Updates(inputLog)
+	if tx.Error != nil {
+		return errors.New("failed update log")
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("row not affected")
+	}
+	return nil
+}
+
 // Select implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) Select(idMentee uint) (menteelogs.MenteeEntity, error) {
 	var input Mentee
-	tx:=repo.db.Preload("Status").Preload("Class").Preload("MenteeLogs").Preload("MenteeLogs.Users").First(&input,idMentee)
+	tx := repo.db.Preload("Status").Preload("Class").Preload("MenteeLogs").Preload("MenteeLogs.Users").First(&input, idMentee)
 	if tx.Error != nil {
 		return menteelogs.MenteeEntity{}, errors.New("failed read feedback mentee")
 	}
-	output:=ModelMenteeToEntity(input)
-	return output,nil
+	output := ModelMenteeToEntity(input)
+	return output, nil
 }
 
 // Insert implements menteelogs.MenteeLogDataInterface.
