@@ -36,6 +36,20 @@ func (handler *MenteeLogHandler)Add(c echo.Context)error{
 	}
 	return c.JSON(http.StatusCreated,helper.WebResponse(201,"success create feedback",nil))
 }
+
+func (handler *MenteeLogHandler)Get(c echo.Context)error{
+	id:=c.Param("mentee_id")
+	idMentee,errConv:=strconv.Atoi(id)
+	if errConv != nil{
+		return c.JSON(http.StatusBadRequest,helper.WebResponse(400, "id not valid", nil))
+	}
+	data,err :=handler.menteeLogHandler.Get(uint(idMentee))	
+	if err != nil{
+		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,err.Error(),nil))
+	}
+	response:=EntityResponseById(data)
+	return c.JSON(http.StatusOK,helper.WebResponse(200,"success get feedback",response))
+}
 func New(handler menteelogs.MenteeLogServiceInterface)*MenteeLogHandler{
 	return &MenteeLogHandler{
 		menteeLogHandler: handler,

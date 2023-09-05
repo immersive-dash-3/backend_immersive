@@ -11,45 +11,56 @@ type MenteeLogData struct {
 	db *gorm.DB
 }
 
+// Select implements menteelogs.MenteeLogDataInterface.
+func (repo *MenteeLogData) Select(idMentee uint) (menteelogs.MenteeEntity, error) {
+	var input Mentee
+	tx:=repo.db.Preload("Status").Preload("Class").Preload("MenteeLogs").Preload("MenteeLogs.Users").First(&input,idMentee)
+	if tx.Error != nil {
+		return menteelogs.MenteeEntity{}, errors.New("failed read feedback mentee")
+	}
+	output:=ModelMenteeToEntity(input)
+	return output,nil
+}
+
 // Insert implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) Insert(input menteelogs.MenteeLogEntity) (string, error) {
-	inputModel:=EntityToModel(input)
-	tx:=repo.db.Create(&inputModel)
-	if tx.Error != nil{
-		return "",errors.New("failed insert log")
+	inputModel := EntityToModel(input)
+	tx := repo.db.Create(&inputModel)
+	if tx.Error != nil {
+		return "", errors.New("failed insert log")
 	}
-	if tx.RowsAffected ==0{
-		return "",errors.New("row not affected table log")
+	if tx.RowsAffected == 0 {
+		return "", errors.New("row not affected table log")
 	}
-	return inputModel.Status,nil
+	return inputModel.Status, nil
 }
 
 // InsertStatus implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) InsertStatus(status string) (uint, error) {
 	var inputModel Status
-	inputModel.Name=status
-	tx:=repo.db.Create(&inputModel)
-	if tx.Error != nil{
-		return 0,errors.New("failed insert status")
+	inputModel.Name = status
+	tx := repo.db.Create(&inputModel)
+	if tx.Error != nil {
+		return 0, errors.New("failed insert status")
 	}
-	if tx.RowsAffected ==0{
-		return 0,errors.New("row not affected table status")
+	if tx.RowsAffected == 0 {
+		return 0, errors.New("row not affected table status")
 	}
-	return inputModel.ID,nil
+	return inputModel.ID, nil
 }
 
 // UpdateMentee implements menteelogs.MenteeLogDataInterface.
-func (repo *MenteeLogData) UpdateMentee(idStatus uint,idMentee uint) error {
+func (repo *MenteeLogData) UpdateMentee(idStatus uint, idMentee uint) error {
 	var menteeInput Mentee
-	menteeInput.StatusID=idStatus
-	tx:=repo.db.Model(&Mentee{}).Where("id=?",idMentee).Updates(menteeInput)
-	if tx.Error != nil{
+	menteeInput.StatusID = idStatus
+	tx := repo.db.Model(&Mentee{}).Where("id=?", idMentee).Updates(menteeInput)
+	if tx.Error != nil {
 		return errors.New("failed update status_id di tabel mentee")
 	}
-	if tx.RowsAffected ==0{
+	if tx.RowsAffected == 0 {
 		return errors.New("row not affected table mentee")
 	}
-	return nil	
+	return nil
 }
 
 func New(db *gorm.DB) menteelogs.MenteeLogDataInterface {

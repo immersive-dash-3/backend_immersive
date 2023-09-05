@@ -28,4 +28,5 @@ func InitRouter(db *gorm.DB,c *echo.Echo){
 	MLService:=menteeLogService.New(MLData)
 	MLHandler:=menteeLogHandler.New(MLService)
 	c.POST("/mentees/:mentee_id/logs",MLHandler.Add)
+	c.GET("/mentees/:mentee_id/logs",MLHandler.Get)
 }
