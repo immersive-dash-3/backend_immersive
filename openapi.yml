@@ -320,7 +320,12 @@ paths:
         '500':
           $ref: "#/components/responses/responseFailedInternal"
 
-  /mentee/{mentee_id}/logs:
+
+
+  # mentee
+
+  # log
+  /mentees/{mentee_id}/logs:
     post:
       tags:
         - Logs
@@ -355,11 +360,6 @@ paths:
                 example:
                   code: 201
                   message: "insert berhasil"
-                  data:
-                    id: 3
-                    user_id: 2
-                    status_id: 2
-                    logs: "sebenarnya sudah cukup baik, mungkin perlu ada beberapa peningkatan lagi"
         "400":
           $ref: "#/components/responses/responseBadRequest"
         "500":
@@ -530,11 +530,10 @@ paths:
               schema:
                 type: object
                 example:
+                  code: 201
                   status: "success"
                   message: "insert berhasil"
-                  data:
-                    id: 1
-                    name: "FE 11"
+
         "400":
           $ref: "#/components/responses/responseBadRequest"
         "500":
@@ -555,6 +554,7 @@ paths:
               schema:
                 type: object
                 example:
+                  code: 200
                   status: "success"
                   message: "success get all class"
                   data:
@@ -601,11 +601,10 @@ paths:
               schema:
                 type: object
                 example:
+                  code: 200
                   status: "success"
                   message: "edit berhasil"
-                  data:
-                    id: 1
-                    name: "FE 14"
+
         "400":
           $ref: "#/components/responses/responseFailedInternal"
         "500":
@@ -634,6 +633,7 @@ paths:
               schema:
                 type: object
                 example:
+                  code: 200
                   status: "success"
                   message: "delete berhasil"
         "400":
@@ -664,6 +664,7 @@ paths:
               schema:
                 type: object
                 example:
+                  code: 200
                   status: "success"
                   message: "berhasil membaca data class"
                   data:

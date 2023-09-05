@@ -2,7 +2,6 @@ package data
 
 import (
 	class "immersive_project/klp3/features/classes/data"
-	"immersive_project/klp3/features/mentee"
 	"immersive_project/klp3/features/menteelogs"
 	user "immersive_project/klp3/features/users/data"
 
@@ -47,24 +46,28 @@ type Status struct{
 	gorm.Model
 	Name            string	  `json:"name" form:"name"`
 }
-func StatusEntityToModel(status mentee.StatusEntity)Status{
+func StatusEntityToModel(status menteelogs.StatusEntity)Status{
 	return Status{
 		Name:  status.Name,
 	}
 }
 
-func StatusModelToEntity(status Status)mentee.StatusEntity{
-	return mentee.StatusEntity{
+func StatusModelToEntity(status Status)menteelogs.StatusEntity{
+	return menteelogs.StatusEntity{
+		Id:              status.ID,
+		CreatedAt:       status.CreatedAt,
+		UpdatedAt:       status.UpdatedAt,
+		DeletedAt:       status.DeletedAt.Time,
 		Name:  status.Name,
 	}
 }
 
-func ModelMenteeToEntity(mente Mentee)mentee.MenteeEntity{
+func ModelMenteeToEntity(mente Mentee)menteelogs.MenteeEntity{
 	var logs []menteelogs.MenteeLogEntity
 	for _,value:= range mente.MenteeLogs{
 		logs = append(logs, ModelToEntity(value))
 	}
-	return mentee.MenteeEntity{
+	return menteelogs.MenteeEntity{
 		Id:              mente.ID,
 		CreatedAt:       mente.CreatedAt,
 		UpdatedAt:       mente.UpdatedAt,
