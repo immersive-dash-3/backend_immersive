@@ -42,8 +42,8 @@ func (service *ClassService) Edit(id uint, input classes.ClassessEntity) (error)
 }
 
 // GetAll implements classes.ClassServiceInterface.
-func (service *ClassService) GetAll() ([]classes.ClassessEntity, error) {
-	data, err := service.classService.SelectAll()
+func (service *ClassService) GetAll(page, pageSize int) ([]classes.ClassessEntity, error) {
+	data, err := service.classService.SelectAll(page,pageSize)
 	if err != nil {
 		return nil, err
 	}

@@ -38,9 +38,10 @@ func (repo *ClassData) Update(id uint, input classes.ClassessEntity) (uint, erro
 }
 
 // SelectAll implements classes.ClassDataInterface.
-func (repo *ClassData) SelectAll() ([]classes.ClassessEntity, error) {
+func (repo *ClassData) SelectAll(page, pageSize int) ([]classes.ClassessEntity, error) {
+	offset := (page - 1) * pageSize
 	var input []Classes
-	tx := repo.db.Find(&input)
+	tx := repo.db.Offset(offset).Limit(pageSize).Find(&input)
 	if tx.Error != nil {
 		return nil, errors.New("error get all data")
 	}
