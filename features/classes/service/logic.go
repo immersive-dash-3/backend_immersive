@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"immersive_project/klp3/features/classes"
 	handlers "immersive_project/klp3/features/classes/handler"
 
@@ -50,8 +49,6 @@ func (service *ClassService) GetAll(page, pageSize int) (bool,[]classes.Classess
 	}
 	var bolean bool
 	a:=count/(page)
-	fmt.Println(a)
-	fmt.Println("count",count)
 	if a<pageSize{
 		bolean = true
 	}else{
