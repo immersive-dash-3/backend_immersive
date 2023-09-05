@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"immersive_project/klp3/features/classes"
 	handlers "immersive_project/klp3/features/classes/handler"
 
@@ -42,12 +43,22 @@ func (service *ClassService) Edit(id uint, input classes.ClassessEntity) (error)
 }
 
 // GetAll implements classes.ClassServiceInterface.
-func (service *ClassService) GetAll(page, pageSize int) ([]classes.ClassessEntity, error) {
-	data, err := service.classService.SelectAll(page,pageSize)
+func (service *ClassService) GetAll(page, pageSize int) (bool,[]classes.ClassessEntity, error) {
+	count,data, err := service.classService.SelectAll(page,pageSize)
 	if err != nil {
-		return nil, err
+		return false,nil, err
 	}
-	return data, nil
+	var bolean bool
+	a:=count/(page)
+	fmt.Println(a)
+	fmt.Println("count",count)
+	if a<pageSize{
+		bolean = true
+	}else{
+		bolean=false
+	}
+
+	return bolean, data, nil
 }
 
 // Add implements classes.ClassServiceInterface.
