@@ -15,13 +15,13 @@ type ClassessEntity struct {
 type ClassDataInterface interface{
 	Insert(input ClassessEntity)(uint,error)
 	SelectById(id uint)(ClassessEntity,error)
-	SelectAll()([]ClassessEntity,error)
+	SelectAll(page, pageSize int)([]ClassessEntity,error)
 	Update(id uint, input ClassessEntity)(uint,error)
 	Delete(id uint)(error)
 }
 type ClassServiceInterface interface{
 	Add(input ClassessEntity)(error)
-	GetAll()([]ClassessEntity,error)
+	GetAll(page, pageSize int)([]ClassessEntity,error)
 	Edit(id uint,input ClassessEntity)(error)
 	GetById(id uint)(ClassessEntity,error)
 	Delete(id uint)error
