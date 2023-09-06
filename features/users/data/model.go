@@ -14,7 +14,7 @@ type User struct {
 	Team     string `gorm:"type:enum('Manager','People','Placement','Mentor');default:'People';column:team;not null"`
 	Role     string `gorm:"type:enum('Non-Admin','Admin');default:'Non-Admin';column:role;not null"`
 	Address  string `gorm:"column:address"`
-	Status   string `gorm:"type:enum('Interview','Join Class','Unit 1', 'Unit 2', 'Unit 3', 'Repeat Unit 1', 'Repeat Unit 2', 'Repeat Unit 3', 'Placement', 'Eliminated', 'Graduated');default:'Interview';column:status;not null"`
+	Status   string `gorm:"type:enum('Active','Non-Active','Deleted');default:'Active';column:status;not null"`
 }
 
 func EntityToModel(user users.UserEntity) User {
