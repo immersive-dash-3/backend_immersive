@@ -44,13 +44,36 @@ func (data *UserDataImplementation) Delete(id uint) error {
 }
 
 // FindAll implements users.UserDataInterface
-func (data *UserDataImplementation) FindAll(page, itemsPerPage int) ([]users.UserEntity, int64, error) {
+func (data *UserDataImplementation) FindAll(page, itemsPerPage int, searchName string) ([]users.UserEntity, int64, error) {
 	var userEntities []users.UserEntity
 	var userDatas []User
+	var total_users int64
 
-	tx := data.db.Find(&userDatas)
-	if tx.Error != nil {
-		return []users.UserEntity{}, 0, exception.ErrInternalServer
+	offset := (page - 1) * itemsPerPage
+	limit := itemsPerPage
+	if searchName != "" {
+		tx := data.db.Where("name like ?", "%"+searchName+"%").Find(&userDatas)
+		if tx.Error != nil {
+			return []users.UserEntity{}, 0, exception.ErrInternalServer
+		}
+		total_users = tx.RowsAffected
+
+		tx = data.db.Where("name like ?", "%"+searchName+"%").Offset(offset).Limit(limit).Find(&userDatas)
+
+		if tx.Error != nil {
+			return []users.UserEntity{}, 0, exception.ErrInternalServer
+		}
+	} else {
+		tx := data.db.Offset(offset).Limit(limit).Find(&userDatas)
+		if tx.Error != nil {
+			return []users.UserEntity{}, 0, exception.ErrInternalServer
+		}
+		total_users = tx.RowsAffected
+		tx = data.db.Offset(offset).Limit(limit).Find(&userDatas)
+
+		if tx.Error != nil {
+			return []users.UserEntity{}, 0, exception.ErrInternalServer
+		}
 	}
 
 	for _, data := range userDatas {
@@ -58,9 +81,7 @@ func (data *UserDataImplementation) FindAll(page, itemsPerPage int) ([]users.Use
 		userEntities = append(userEntities, entity)
 	}
 
-	count_users := tx.RowsAffected
-
-	return userEntities, count_users, nil
+	return userEntities, total_users, nil
 
 }
 
@@ -92,12 +113,12 @@ func (data *UserDataImplementation) Login(email string, password string) (users.
 
 	tx := data.db.Where("email = ? and password = ?", email, hashPassword).Find(&user)
 
-	if tx.RowsAffected == 0 {
-		return users.UserEntity{}, gorm.ErrRecordNotFound
-	}
-
 	if tx.Error != nil {
 		return users.UserEntity{}, exception.ErrInternalServer
+	}
+
+	if tx.RowsAffected == 0 {
+		return users.UserEntity{}, gorm.ErrRecordNotFound
 	}
 
 	dataLogin := ModelToEntity(user)
