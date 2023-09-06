@@ -109,6 +109,12 @@ paths:
                     type: string
                     description: A human-readable message describing the result.
                     example: success
+                  next_page:
+                    type: boolean
+                    example: true
+                  prev_page:
+                    type: boolean
+                    example: false
                   data:
                     type: array
                     items:
