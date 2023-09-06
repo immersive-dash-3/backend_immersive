@@ -2,7 +2,6 @@ package data
 
 import (
 	"errors"
-	"fmt"
 	"immersive_project/klp3/exception"
 	"immersive_project/klp3/features/users"
 	"immersive_project/klp3/helper"
@@ -97,9 +96,8 @@ func (data *UserDataImplementation) FindById(id uint) (users.UserEntity, error) 
 	var user User
 	var userEntity users.UserEntity
 
-	fmt.Println(id)
 	tx := data.db.First(&user, id)
-	fmt.Println(tx.Error)
+
 	if tx.Error != nil {
 		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
 			return users.UserEntity{}, exception.ErrIdIsNotFound

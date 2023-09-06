@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"immersive_project/klp3/app/middleware"
 	"immersive_project/klp3/exception"
 	"immersive_project/klp3/features/users"
@@ -30,7 +29,7 @@ func (s *UserServiceImplementation) Delete(id uint) error {
 // FindAll implements users.UserServiceInterface
 func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchName string) ([]users.UserEntity, bool, error) {
 	nextPage := true
-	fmt.Println(nextPage)
+
 	res, total_users, err := s.data.FindAll(page, itemsPerPage, searchName)
 
 	if err != nil {
@@ -38,7 +37,7 @@ func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchNa
 	}
 
 	total_pages := total_users / int64(itemsPerPage)
-	fmt.Println(total_pages, total_users)
+
 	if total_users%int64(itemsPerPage) != 0 {
 		total_pages += 1
 	}
@@ -47,7 +46,6 @@ func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchNa
 		nextPage = false
 	}
 
-	fmt.Println(nextPage, "kedua")
 	return res, nextPage, nil
 
 }

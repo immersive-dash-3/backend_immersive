@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"immersive_project/klp3/exception"
 	"immersive_project/klp3/features/users"
 	"immersive_project/klp3/helper"
@@ -43,13 +42,12 @@ func (handler *UserHandlerImplementation) Create(c echo.Context) error {
 func (handler *UserHandlerImplementation) Delete(c echo.Context) error {
 	id := c.Param("user_id")
 	intId, err := strconv.Atoi(id)
-	fmt.Println(intId)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "bad request", nil))
 	}
 
 	err = handler.service.Delete(uint(intId))
-	fmt.Println("error", err)
 	if err != nil {
 		if errors.Is(err, exception.ErrIdIsNotFound) {
 			return c.JSON(http.StatusNotFound, helper.WebResponse(http.StatusNotFound, "operation failed, resource not found", nil))
@@ -123,7 +121,7 @@ func (handler *UserHandlerImplementation) Update(c echo.Context) error {
 
 	userEntity := UserRequestToEntity(userRequest)
 	userEntity.Id = uint(intId)
-	fmt.Println(userEntity)
+
 	err = handler.service.Update(userEntity)
 	if err != nil {
 		if errors.Is(err, exception.ErrIdIsNotFound) {
