@@ -39,3 +39,19 @@ type StatusEntity struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	Name      string    `json:"name" form:"name"`
 }
+
+type MenteeDataInterface interface {
+	SelectAll(limit, offset uint) ([]MenteeEntity, error)
+	Insert(input MenteeEntity) error
+	Select(mentee_id uint) (MenteeEntity, error)
+	Update(mentee_id uint, input MenteeEntity) error
+	Delete(mentee_id uint) error
+}
+
+type MenteeServiceInterface interface {
+	GetAll(page, item uint) ([]MenteeEntity, error)
+	Insert(input MenteeEntity) error
+	Get(mentee_id uint) (MenteeEntity, error)
+	Update(mentee_id uint, input MenteeEntity) error
+	Delete(mentee_id uint) error
+}

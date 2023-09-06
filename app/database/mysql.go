@@ -23,6 +23,6 @@ func InitMysql(cfg *config.AppConfig) *gorm.DB {
 	return DB
 }
 
-func InittialMigration(db *gorm.DB){
-	db.AutoMigrate(&user.User{},&class.Classes{},&mentee.Mentee{},&menteeLog.MenteeLog{},&mentee.Status{})
+func InittialMigration(db *gorm.DB) {
+	db.AutoMigrate(&user.User{}, &class.Classes{}, &mentee.Mentee{}, &menteeLog.MenteeLog{}, &mentee.Status{})
 }
