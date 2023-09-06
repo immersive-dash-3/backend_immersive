@@ -11,7 +11,7 @@ import (
 
 func main() {
 	cfg := config.InitConfig()
-	mysql:=database.InitMysql(cfg)
+	mysql := database.InitMysql(cfg)
 	database.InittialMigration(mysql)
 
 	e := echo.New()
@@ -20,7 +20,7 @@ func main() {
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
 	}))
-	router.InitRouter(mysql,e)
+	router.InitRouter(mysql, e)
 	e.Logger.Fatal(e.Start(":80"))
 
 }
