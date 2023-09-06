@@ -49,9 +49,15 @@ paths:
                   "message":
                     type: string
                     example: authentication success
-                  "token":
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTM4ODY3MzUsInVzZXJJZCI6Im9SNGJteDlSSHVqbmhjQXJRTGhxIn0.R2p7Vils0rZZbS-9gEbayncyxvUEATnav0i6vPRCIz0
+                  "data":
+                    type: object
+                    properties:
+                      "role":
+                        type: string
+                        example: "Admin"
+                      "token":
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2OTM4ODY3MzUsInVzZXJJZCI6Im9SNGJteDlSSHVqbmhjQXJRTGhxIn0.R2p7Vils0rZZbS-9gEbayncyxvUEATnav0i6vPRCIz0
         '400':
           $ref: "#/components/responses/responseBadRequest"
         '404':
@@ -103,6 +109,12 @@ paths:
                     type: string
                     description: A human-readable message describing the result.
                     example: success
+                  next_page:
+                    type: boolean
+                    example: true
+                  prev_page:
+                    type: boolean
+                    example: false
                   data:
                     type: array
                     items:
@@ -281,7 +293,7 @@ paths:
           $ref: "#/components/responses/responseBadRequest"
         '500':
           $ref: "#/components/responses/responseFailedInternal"
-                  
+
   /mentee/{mentee_id}:
     get:
       tags:
@@ -316,7 +328,7 @@ paths:
     put:
       tags:
         - Mentee
-      summary: update data mentee 
+      summary: update data mentee
       description: update data mentee
       security:
         - JWTAuth: []
@@ -706,7 +718,7 @@ paths:
           $ref: "#/components/responses/responseBadRequest"
         "500":
           $ref: "#/components/responses/responseFailedInternal"
-    
+
     get:
       tags:
         - Class
@@ -751,7 +763,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: "use Token"
-  
+
   responses:
     responseSuccess:
       description: failed
@@ -809,7 +821,7 @@ components:
               "data":
                 type: object
                 example: null
-              
+
     responseNotFound:
       description: resouse was not found
       content:
@@ -846,7 +858,7 @@ components:
               "data":
                 type: object
                 example: null
-              
+
   #==================================#
   # schemas
   #==================================#
@@ -1035,7 +1047,7 @@ components:
         "name":
           type: string
           example: FE 15
-    
+
     status:
       type: object
       properties:
@@ -1059,7 +1071,7 @@ components:
           example: get data success
         "data":
           $ref: "#/components/schemas/mentee"
-    
+
     responseSuccessArray:
       type: object
       properties:
@@ -1073,7 +1085,7 @@ components:
         "data":
           type: array
           items:
-            $ref: "#/components/schemas/ManteeArray" 
+            $ref: "#/components/schemas/ManteeArray"
 
     ManteeArray:
         properties:
