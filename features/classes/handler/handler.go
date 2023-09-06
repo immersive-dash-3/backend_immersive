@@ -28,12 +28,26 @@ func (handler *ClassHandler) Add(c echo.Context) error {
 }
 
 func (handler *ClassHandler) GetAll(c echo.Context) error {
-	data, err := handler.classHandler.GetAll()
+
+	page := c.QueryParam("page")
+	pageItem := c.QueryParam("itemsPerPage")
+	Page, errPage := strconv.Atoi(page)
+	if errPage != nil {
+		return c.JSON(http.StatusNotFound, helper.WebResponse(404, "id not page", nil))
+	}
+	PageItem, errPageItem := strconv.Atoi(pageItem)
+	if errPageItem != nil {
+		return c.JSON(http.StatusNotFound, helper.WebResponse(404, "id not page item", nil))
+	}
+	bolean, data, err := handler.classHandler.GetAll(Page, PageItem)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(500, err.Error(), nil))
 	}
 	response := EntityToResponseAll(data)
-	return c.JSON(http.StatusOK, helper.WebResponse(200, "success get all class", response))
+	return c.JSON(http.StatusOK, helper.WebResponse(200, "success get all class", map[string]any{
+		"bolean": bolean,
+		"data":   response,
+	}))
 }
 
 func (handler *ClassHandler) Edit(c echo.Context) error {

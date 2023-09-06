@@ -38,14 +38,26 @@ func (repo *ClassData) Update(id uint, input classes.ClassessEntity) (uint, erro
 }
 
 // SelectAll implements classes.ClassDataInterface.
-func (repo *ClassData) SelectAll() ([]classes.ClassessEntity, error) {
+func (repo *ClassData) SelectAll(page, pageSize int) (int,[]classes.ClassessEntity, error) {
+	offset := (page - 1) * pageSize
 	var input []Classes
-	tx := repo.db.Find(&input)
-	if tx.Error != nil {
-		return nil, errors.New("error get all data")
+	txx := repo.db.Find(&input)
+	if txx.Error != nil {
+		return 0,nil, errors.New("error get all data")
 	}
-	output := ModelToEntityAll(input)
-	return output, nil
+	var count int=0
+	var dataInput []Classes
+	for _,value:=range input{
+		count++
+		dataInput = append(dataInput, value)
+	}
+
+	tx := repo.db.Offset(offset).Limit(pageSize).Find(&dataInput)
+	if tx.Error != nil {
+		return 0,nil, errors.New("error get all data per page")
+	}
+	output := ModelToEntityAll(dataInput)
+	return count,output, nil
 }
 
 // Insert implements classes.ClassDataInterface.

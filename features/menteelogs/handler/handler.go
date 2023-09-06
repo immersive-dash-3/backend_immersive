@@ -50,6 +50,38 @@ func (handler *MenteeLogHandler)Get(c echo.Context)error{
 	response:=EntityResponseById(data)
 	return c.JSON(http.StatusOK,helper.WebResponse(200,"success get feedback",response))
 }
+
+func (handler *MenteeLogHandler)Edit(c echo.Context)error{
+	id:=c.Param("log_id")
+	idLog,errConv:=strconv.Atoi(id)
+	if errConv != nil{
+		return c.JSON(http.StatusBadRequest,helper.WebResponse(400, "id not valid", nil))
+	}
+	var input MenteeLogRequest
+	errBind:=c.Bind(&input)
+	if errBind != nil{
+		return c.JSON(http.StatusBadRequest,helper.WebResponse(400,"input tidak sesuai",nil))
+	}
+	inputEntity:=RequestToEntity(input)
+	err:=handler.menteeLogHandler.Edit(uint(idLog),inputEntity)	
+	if err != nil{
+		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,err.Error(),nil))
+	}
+	return c.JSON(http.StatusOK,helper.WebResponse(200,"success edit feedback",nil))
+}
+
+func (handler *MenteeLogHandler)Delete(c echo.Context)error{
+	id:=c.Param("log_id")
+	idLog,errConv:=strconv.Atoi(id)
+	if errConv != nil{
+		return c.JSON(http.StatusBadRequest,helper.WebResponse(400, "id not valid", nil))
+	}
+	err:=handler.menteeLogHandler.Delete(uint(idLog))	
+	if err != nil{
+		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,err.Error(),nil))
+	}
+	return c.JSON(http.StatusOK,helper.WebResponse(200,"success delete feedback",nil))
+}
 func New(handler menteelogs.MenteeLogServiceInterface)*MenteeLogHandler{
 	return &MenteeLogHandler{
 		menteeLogHandler: handler,
