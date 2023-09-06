@@ -60,4 +60,4 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	c.PUT("/users/:user_id", userHandler.Update)
 	c.DELETE("/users/:user_id", userHandler.Delete)
 	c.POST("/users", userHandler.Create)
-
+}
