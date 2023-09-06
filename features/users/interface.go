@@ -17,4 +17,5 @@ type UserEntity struct {
 }
 
 type DataUserInterface interface {
+	FindById(id uint)
 }
