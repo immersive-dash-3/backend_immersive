@@ -11,13 +11,13 @@ import (
 
 func TestDelete(t *testing.T){
 	mockData := new(mocks.ClassData)
-	
+
 	t.Run("success delete class",func(t *testing.T){
 		mockData.On("Delete",uint(1)).Return(nil).Once()
 		srv:=New(mockData)
 		err:=srv.Delete(uint(1))
 		assert.Nil(t,err)
-		mockData.AssertExpectations(t)	
+		mockData.AssertExpectations(t)
 	})
 
 	t.Run("failed delete class",func(t *testing.T){
@@ -25,7 +25,7 @@ func TestDelete(t *testing.T){
 		srv:=New(mockData)
 		err:=srv.Delete(uint(1))
 		assert.NotNil(t,err)
-		mockData.AssertExpectations(t)		
+		mockData.AssertExpectations(t)
 	})
 }
 
@@ -56,7 +56,7 @@ func TestGetById(t *testing.T){
 
 func TestEdit(t *testing.T){
 	mockData := new(mocks.ClassData)
-	
+
 	t.Run("success update class",func(t *testing.T){
 		inputData:=classes.ClassessEntity{
 			Name:"BE 17",
@@ -65,7 +65,7 @@ func TestEdit(t *testing.T){
 		srv:=New(mockData)
 		err:=srv.Edit(uint(1),inputData)
 		assert.Nil(t,err)
-		mockData.AssertExpectations(t)	
+		mockData.AssertExpectations(t)
 	})
 
 	t.Run("failed update class",func(t *testing.T){
@@ -80,7 +80,6 @@ func TestEdit(t *testing.T){
 
 	})
 }
-
 func TestGetAll(t *testing.T){
 	mockData := new(mocks.ClassData)
 	returnData:=[]classes.ClassessEntity{
@@ -89,23 +88,37 @@ func TestGetAll(t *testing.T){
 	}
 
 	t.Run("success get all",func(t *testing.T){
-		mockData.On("SelectAll",int(1),int(1)).Return(returnData,nil).Once()
+		mockData.On("SelectAll",int(1),int(1)).Return(int(1),returnData,nil).Once()
 		srv:=New(mockData)
-		response,err:=srv.GetAll(int(1),int(1))
+		_,response,err:=srv.GetAll(int(1),int(1))
+	
 		assert.Nil(t,err)
 		assert.Equal(t,returnData,response)
 		mockData.AssertExpectations(t)
 	})
 
-	t.Run("failed get all",func(t *testing.T){
-		mockData.On("SelectAll",int(1),int(1)).Return(nil,errors.New("error get all")).Once()
+	t.Run("success get all a<pageSize",func(t *testing.T){
+		mockData.On("SelectAll",int(1),int(10)).Return(int(5),returnData,nil).Once()
 		srv:=New(mockData)
-		response,err:=srv.GetAll(int(1),int(1))
+		bool,response,err:=srv.GetAll(int(1),int(10))
+	
+		assert.Nil(t,err)
+		assert.Equal(t,returnData,response)
+		assert.True(t,bool)
+		mockData.AssertExpectations(t)
+	})
+
+	t.Run("failed get all",func(t *testing.T){
+		mockData.On("SelectAll",int(1),int(1)).Return(int(0),nil,errors.New("error get all")).Once()
+		srv:=New(mockData)
+		_,response,err:=srv.GetAll(int(1),int(1))
 		assert.NotNil(t,err)
 		assert.Nil(t,response)
-		mockData.AssertExpectations(t)		
+		mockData.AssertExpectations(t)
 	})
 }
+
+//go test ./features/classes/... -coverprofile=cover.out && go tool cover -html=cover.out
 
 func TestAdd(t *testing.T){
 	mockData := new(mocks.ClassData)
@@ -118,7 +131,7 @@ func TestAdd(t *testing.T){
 		srv:=New(mockData)
 		err:=srv.Add(inputData)
 		assert.Nil(t,err)
-		mockData.AssertExpectations(t)	
+		mockData.AssertExpectations(t)
 
 	})
 
@@ -130,7 +143,7 @@ func TestAdd(t *testing.T){
 		srv:=New(mockData)
 		err:=srv.Add(inputData)
 		assert.NotNil(t,err)
-		mockData.AssertExpectations(t)			
+		mockData.AssertExpectations(t)
 	})
 
 	t.Run("validate add class",func(t *testing.T){
@@ -138,6 +151,6 @@ func TestAdd(t *testing.T){
 		srv:=New(mockData)
 		err:=srv.Add(inputData)
 		assert.NotNil(t,err)
-		mockData.AssertExpectations(t)		
+		mockData.AssertExpectations(t)
 	})
 }

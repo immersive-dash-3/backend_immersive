@@ -52,29 +52,36 @@ func (_m *ClassData) Insert(input classes.ClassessEntity) (uint, error) {
 }
 
 // SelectAll provides a mock function with given fields: page, pageSize
-func (_m *ClassData) SelectAll(page int, pageSize int) ([]classes.ClassessEntity, error) {
+func (_m *ClassData) SelectAll(page int, pageSize int) (int, []classes.ClassessEntity, error) {
 	ret := _m.Called(page, pageSize)
 
-	var r0 []classes.ClassessEntity
-	var r1 error
-	if rf, ok := ret.Get(0).(func(int, int) ([]classes.ClassessEntity, error)); ok {
+	var r0 int
+	var r1 []classes.ClassessEntity
+	var r2 error
+	if rf, ok := ret.Get(0).(func(int, int) (int, []classes.ClassessEntity, error)); ok {
 		return rf(page, pageSize)
 	}
-	if rf, ok := ret.Get(0).(func(int, int) []classes.ClassessEntity); ok {
+	if rf, ok := ret.Get(0).(func(int, int) int); ok {
 		r0 = rf(page, pageSize)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]classes.ClassessEntity)
+		r0 = ret.Get(0).(int)
+	}
+
+	if rf, ok := ret.Get(1).(func(int, int) []classes.ClassessEntity); ok {
+		r1 = rf(page, pageSize)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]classes.ClassessEntity)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(page, pageSize)
+	if rf, ok := ret.Get(2).(func(int, int) error); ok {
+		r2 = rf(page, pageSize)
 	} else {
-		r1 = ret.Error(1)
+		r2 = ret.Error(2)
 	}
 
-	return r0, r1
+	return r0, r1, r2
 }
 
 // SelectById provides a mock function with given fields: id
