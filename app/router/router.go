@@ -1,6 +1,7 @@
 package router
 
 import (
+	"immersive_project/klp3/app/middleware"
 	classData "immersive_project/klp3/features/classes/data"
 	classHandler "immersive_project/klp3/features/classes/handler"
 	classService "immersive_project/klp3/features/classes/service"
@@ -25,11 +26,11 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	CService := classService.New(CData)
 	CHandler := classHandler.New(CService)
 
-	c.POST("/classes", CHandler.Add)
-	c.GET("/classes", CHandler.GetAll)
-	c.PUT("/classes/:class_id", CHandler.Edit)
-	c.GET("/classes/:class_id", CHandler.GetById)
-	c.DELETE("/classes/:class_id", CHandler.Delete)
+	c.POST("/classes", CHandler.Add,middleware.JWTMiddleware())
+	c.GET("/classes", CHandler.GetAll,middleware.JWTMiddleware())
+	c.PUT("/classes/:class_id", CHandler.Edit,middleware.JWTMiddleware())
+	c.GET("/classes/:class_id", CHandler.GetById,middleware.JWTMiddleware())
+	c.DELETE("/classes/:class_id", CHandler.Delete,middleware.JWTMiddleware())
 
 	MData := menteeData.New(db)
 	MService := menteeService.New(MData)
@@ -45,10 +46,10 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	MLService := menteeLogService.New(MLData)
 	MLHandler := menteeLogHandler.New(MLService)
 
-	c.POST("/mentees/:mentee_id/logs", MLHandler.Add)
-	c.GET("/mentees/:mentee_id/logs", MLHandler.Get)
-	c.PUT("/logs/:log_id", MLHandler.Edit)
-	c.DELETE("/logs/:log_id", MLHandler.Delete)
+	c.POST("/mentees/:mentee_id/logs", MLHandler.Add,middleware.JWTMiddleware())
+	c.GET("/mentees/:mentee_id/logs", MLHandler.Get,middleware.JWTMiddleware())
+	c.PUT("/logs/:log_id", MLHandler.Edit,middleware.JWTMiddleware())
+	c.DELETE("/logs/:log_id", MLHandler.Delete,middleware.JWTMiddleware())
 
 	userData := usersData.New(db)
 	userService := usersService.New(userData)

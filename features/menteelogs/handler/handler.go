@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"immersive_project/klp3/app/middleware"
 	"immersive_project/klp3/features/menteelogs"
 	"immersive_project/klp3/helper"
 	"net/http"
@@ -14,7 +15,7 @@ type MenteeLogHandler struct {
 	menteeLogHandler menteelogs.MenteeLogServiceInterface
 }
 func (handler *MenteeLogHandler)Add(c echo.Context)error{
-	//idUser:=middleware.ExtractTokenUserId(c)
+	idUser:=middleware.ExtractTokenUserId(c)
 	id:=c.Param("mentee_id")
 	idMentee,errConv:=strconv.Atoi(id)
 	if errConv != nil{
@@ -28,7 +29,7 @@ func (handler *MenteeLogHandler)Add(c echo.Context)error{
 	}
 	inputEntity:=RequestToEntity(input)
 	inputEntity.MenteeID=uint(idMentee)
-	//inputEntity.UserID=uint(idUser)
+	inputEntity.UserID=uint(idUser)
 	fmt.Println(inputEntity)
 	err:=handler.menteeLogHandler.Add(inputEntity)
 	if err != nil{

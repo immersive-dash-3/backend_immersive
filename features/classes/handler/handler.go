@@ -31,6 +31,7 @@ func (handler *ClassHandler) GetAll(c echo.Context) error {
 
 	page := c.QueryParam("page")
 	pageItem := c.QueryParam("itemsPerPage")
+	searchName := c.QueryParam("searchNameClass")
 	Page, errPage := strconv.Atoi(page)
 	if errPage != nil {
 		return c.JSON(http.StatusNotFound, helper.WebResponse(404, "id not page", nil))
@@ -39,15 +40,12 @@ func (handler *ClassHandler) GetAll(c echo.Context) error {
 	if errPageItem != nil {
 		return c.JSON(http.StatusNotFound, helper.WebResponse(404, "id not page item", nil))
 	}
-	bolean, data, err := handler.classHandler.GetAll(Page, PageItem)
+	bol, data, err := handler.classHandler.GetAll(Page, PageItem,searchName)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(500, err.Error(), nil))
 	}
 	response := EntityToResponseAll(data)
-	return c.JSON(http.StatusOK, helper.WebResponse(200, "success get all class", map[string]any{
-		"bolean": bolean,
-		"data":   response,
-	}))
+	return c.JSON(http.StatusOK, helper.FindAllWebResponse(200, "success get all class", response, bol))
 }
 
 func (handler *ClassHandler) Edit(c echo.Context) error {
