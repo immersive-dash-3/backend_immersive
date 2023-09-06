@@ -40,8 +40,9 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	userHandler := usersHandler.New(userService)
 
 	c.POST("/login", userHandler.UserLogin)
-	c.GET("/users/", userHandler.FindAll)
+	c.GET("/users", userHandler.FindAll)
 	c.GET("/users/:user_id", userHandler.FindById)
 	c.PUT("/users/:user_id", userHandler.Update)
 	c.DELETE("/users/:user_id", userHandler.Delete)
+	c.POST("/users", userHandler.Create)
 }

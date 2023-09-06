@@ -35,7 +35,7 @@ type UserServiceInterface interface {
 	Update(user UserEntity) error
 	Delete(id uint) error
 	FindById(id int) (UserEntity, error)
-	FindAll(page, itemsPerPage int, searchName string) ([]UserEntity, bool, bool, error)
+	FindAll(page, itemsPerPage int, searchName string) ([]UserEntity, bool, error)
 }
 
 type UserHandlerInterface interface {

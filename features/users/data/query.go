@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"fmt"
 	"immersive_project/klp3/exception"
 	"immersive_project/klp3/features/users"
 	"immersive_project/klp3/helper"
@@ -20,6 +21,12 @@ func New(db *gorm.DB) users.UserDataInterface {
 // Create implements users.UserDataInterface
 func (data *UserDataImplementation) Create(user users.UserEntity) error {
 	userGorm := EntityToModel(user)
+	hashPassword, err := helper.HassPassword(userGorm.Password)
+	if err != nil {
+		return exception.ErrInternalServer
+	}
+	userGorm.Password = hashPassword
+
 	tx := data.db.Create(&userGorm)
 
 	if tx.Error != nil {
@@ -33,11 +40,11 @@ func (data *UserDataImplementation) Delete(id uint) error {
 	tx := data.db.Delete(&User{}, id)
 
 	if tx.Error != nil {
-		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-			return exception.ErrIdIsNotFound
-		}
-	} else {
 		return exception.ErrInternalServer
+	}
+
+	if tx.RowsAffected == 0 {
+		return exception.ErrIdIsNotFound
 	}
 
 	return nil
@@ -64,7 +71,7 @@ func (data *UserDataImplementation) FindAll(page, itemsPerPage int, searchName s
 			return []users.UserEntity{}, 0, exception.ErrInternalServer
 		}
 	} else {
-		tx := data.db.Offset(offset).Limit(limit).Find(&userDatas)
+		tx := data.db.Find(&userDatas)
 		if tx.Error != nil {
 			return []users.UserEntity{}, 0, exception.ErrInternalServer
 		}
@@ -90,13 +97,15 @@ func (data *UserDataImplementation) FindById(id uint) (users.UserEntity, error) 
 	var user User
 	var userEntity users.UserEntity
 
-	tx := data.db.Find(&user, id)
+	fmt.Println(id)
+	tx := data.db.First(&user, id)
+	fmt.Println(tx.Error)
 	if tx.Error != nil {
 		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
 			return users.UserEntity{}, exception.ErrIdIsNotFound
+		} else {
+			return users.UserEntity{}, exception.ErrInternalServer
 		}
-	} else {
-		return users.UserEntity{}, exception.ErrInternalServer
 	}
 
 	userEntity = ModelToEntity(user)
@@ -106,19 +115,18 @@ func (data *UserDataImplementation) FindById(id uint) (users.UserEntity, error) 
 // Login implements users.UserDataInterface
 func (data *UserDataImplementation) Login(email string, password string) (users.UserEntity, error) {
 	var user User
-	hashPassword, err := helper.HassPassword(password)
-	if err != nil {
-		return users.UserEntity{}, exception.ErrInternalServer
-	}
 
-	tx := data.db.Where("email = ? and password = ?", email, hashPassword).Find(&user)
-
+	tx := data.db.Where("email = ?", email).Find(&user)
 	if tx.Error != nil {
 		return users.UserEntity{}, exception.ErrInternalServer
 	}
 
 	if tx.RowsAffected == 0 {
-		return users.UserEntity{}, gorm.ErrRecordNotFound
+		return users.UserEntity{}, exception.ErrIdIsNotFound
+	}
+
+	if !helper.CheckPassword(password, user.Password) {
+		return users.UserEntity{}, exception.ErrIdIsNotFound
 	}
 
 	dataLogin := ModelToEntity(user)
@@ -131,7 +139,16 @@ func (data *UserDataImplementation) Login(email string, password string) (users.
 func (data *UserDataImplementation) Update(user users.UserEntity) error {
 	var userGorm User
 
-	tx := data.db.Model(&userGorm).Updates(user)
+	tx := data.db.First(&userGorm, user.Id)
+	if tx.Error != nil {
+		return exception.ErrInternalServer
+	}
+
+	if tx.RowsAffected == 0 {
+		return exception.ErrIdIsNotFound
+	}
+	userUpdate := EntityToModel(user)
+	tx = data.db.Model(&userGorm).Updates(userUpdate)
 	if tx.Error != nil {
 		return exception.ErrInternalServer
 	}

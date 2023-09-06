@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"immersive_project/klp3/app/middleware"
 	"immersive_project/klp3/exception"
 	"immersive_project/klp3/features/users"
@@ -27,16 +28,17 @@ func (s *UserServiceImplementation) Delete(id uint) error {
 }
 
 // FindAll implements users.UserServiceInterface
-func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchName string) ([]users.UserEntity, bool, bool, error) {
-	nextPage, prevPage := true, true
-
+func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchName string) ([]users.UserEntity, bool, error) {
+	nextPage := true
+	fmt.Println(nextPage)
 	res, total_users, err := s.data.FindAll(page, itemsPerPage, searchName)
 
 	if err != nil {
-		return []users.UserEntity{}, false, false, err
+		return []users.UserEntity{}, false, err
 	}
 
 	total_pages := total_users / int64(itemsPerPage)
+	fmt.Println(total_pages, total_users)
 	if total_users%int64(itemsPerPage) != 0 {
 		total_pages += 1
 	}
@@ -45,11 +47,8 @@ func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchNa
 		nextPage = false
 	}
 
-	if page == 1 {
-		prevPage = false
-	}
-
-	return res, prevPage, nextPage, nil
+	fmt.Println(nextPage, "kedua")
+	return res, nextPage, nil
 
 }
 
@@ -77,6 +76,6 @@ func (s *UserServiceImplementation) Login(email string, password string) (users.
 
 // Update implements users.UserServiceInterface
 func (s *UserServiceImplementation) Update(user users.UserEntity) error {
-	err := s.Update(user)
+	err := s.data.Update(user)
 	return err
 }
