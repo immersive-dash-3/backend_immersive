@@ -49,6 +49,7 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	c.POST("/mentees/:mentee_id/logs", MLHandler.Add,middleware.JWTMiddleware())
 	c.GET("/mentees/:mentee_id/logs", MLHandler.Get,middleware.JWTMiddleware())
 	c.PUT("/logs/:log_id", MLHandler.Edit,middleware.JWTMiddleware())
+	c.GET("/logs", MLHandler.GetAll,middleware.JWTMiddleware())
 	c.DELETE("/logs/:log_id", MLHandler.Delete,middleware.JWTMiddleware())
 
 	userData := usersData.New(db)

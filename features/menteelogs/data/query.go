@@ -11,10 +11,21 @@ type MenteeLogData struct {
 	db *gorm.DB
 }
 
+// SelectAll implements menteelogs.MenteeLogDataInterface.
+func (repo *MenteeLogData) SelectAll() ([]menteelogs.MenteeLogEntity, error) {
+	var inputModel []MenteeLog
+	tx:=repo.db.Preload("Users").Find(&inputModel)
+	if tx.Error != nil {
+		return nil,errors.New("failed get all log")
+	}	
+	output:=ListModelToEntity(inputModel)
+	return output,nil
+}
+
 // Delete implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) Delete(idLog uint) error {
 	var input MenteeLog
-	tx:=repo.db.Delete(&input,idLog)
+	tx := repo.db.Delete(&input, idLog)
 	if tx.Error != nil {
 		return errors.New("failed delete log")
 	}

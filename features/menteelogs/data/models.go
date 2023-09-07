@@ -119,3 +119,11 @@ func ModelToEntity(menteeLog MenteeLog)menteelogs.MenteeLogEntity{
 		Users:     user.ModelToEntity(menteeLog.Users),
 	}
 }
+
+func ListModelToEntity(mentee []MenteeLog)[]menteelogs.MenteeLogEntity{
+	var input []menteelogs.MenteeLogEntity
+	for _,value:=range mentee{
+		input = append(input, ModelToEntity(value))
+	}
+	return input
+}

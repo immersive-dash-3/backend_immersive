@@ -83,6 +83,15 @@ func (handler *MenteeLogHandler)Delete(c echo.Context)error{
 	}
 	return c.JSON(http.StatusOK,helper.WebResponse(200,"success delete feedback",nil))
 }
+
+func (handler *MenteeLogHandler)GetAll(c echo.Context)error{
+	data,err:=handler.menteeLogHandler.GetAll()
+	if err != nil{
+		return c.JSON(http.StatusInternalServerError,helper.WebResponse(500,err.Error(),nil))
+	}
+	output:=EntityToResponseAll(data)
+	return c.JSON(http.StatusOK,helper.WebResponse(200,"success delete feedback",output))	
+}
 func New(handler menteelogs.MenteeLogServiceInterface)*MenteeLogHandler{
 	return &MenteeLogHandler{
 		menteeLogHandler: handler,

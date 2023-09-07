@@ -6,9 +6,15 @@ type MenteeLogService struct {
 	menteeLogService menteelogs.MenteeLogDataInterface
 }
 
+// GetAll implements menteelogs.MenteeLogServiceInterface.
+func (service *MenteeLogService) GetAll() ([]menteelogs.MenteeLogEntity, error) {
+	data,err:=service.menteeLogService.SelectAll()
+	return data,err
+}
+
 // Delete implements menteelogs.MenteeLogServiceInterface.
 func (service *MenteeLogService) Delete(idLog uint) error {
-	err:=service.menteeLogService.Delete(idLog)
+	err := service.menteeLogService.Delete(idLog)
 	if err != nil {
 		return err
 	}
