@@ -14,8 +14,8 @@ type ClassData struct {
 // Delete implements classes.ClassDataInterface.
 func (repo *ClassData) Delete(id uint) error {
 	var input Classes
-	tx:=repo.db.Delete(&input,id)
-	if tx.Error != nil{
+	tx := repo.db.Delete(&input, id)
+	if tx.Error != nil {
 		return errors.New("failed deleted")
 	}
 	if tx.RowsAffected == 0 {
@@ -38,43 +38,43 @@ func (repo *ClassData) Update(id uint, input classes.ClassessEntity) (uint, erro
 }
 
 // SelectAll implements classes.ClassDataInterface.
-func (repo *ClassData) SelectAll(page int, pageSize int,searchName string) (int,[]classes.ClassessEntity, error) {
+func (repo *ClassData) SelectAll(page int, pageSize int, searchName string) (int, []classes.ClassessEntity, error) {
 	offset := (page - 1) * pageSize
 	var input []Classes
 	txx := repo.db.Find(&input)
 	if txx.Error != nil {
-		return 0,nil, errors.New("error get all data")
+		return 0, nil, errors.New("error get all data")
 	}
-	var count int=0
+	var count int = 0
 	var dataInput []Classes
 
-	if searchName == ""{
-		for _,value:=range input{
+	if searchName == "" {
+		for _, value := range input {
 			count++
 			dataInput = append(dataInput, value)
 		}
 		tx := repo.db.Offset(offset).Limit(pageSize).Find(&dataInput)
 		if tx.Error != nil {
-			return 0,nil, errors.New("error get all data per page")
+			return 0, nil, errors.New("error get all data per page")
 		}
-	}else{
+	} else {
 		txx := repo.db.Where("name like ?", "%"+searchName+"%").Find(&input)
 		if txx.Error != nil {
-			return 0,nil, errors.New("error get all data per page")
+			return 0, nil, errors.New("error get all data per page")
 		}
-		for _,value:=range input{
+		for _, value := range input {
 			count++
 			dataInput = append(dataInput, value)
 		}
 
 		tx := repo.db.Where("name like ?", "%"+searchName+"%").Offset(offset).Limit(pageSize).Find(&dataInput)
 		if tx.Error != nil {
-			return 0,nil, errors.New("error get all data per page")
-		}		
+			return 0, nil, errors.New("error get all data per page")
+		}
 	}
 
 	output := ModelToEntityAll(dataInput)
-	return count,output, nil
+	return count, output, nil
 }
 
 // Insert implements classes.ClassDataInterface.

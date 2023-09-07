@@ -41,7 +41,7 @@ type StatusEntity struct {
 }
 
 type MenteeDataInterface interface {
-	SelectAll(limit, offset uint) ([]MenteeEntity, error)
+	SelectAll(limit, offset, status_id, class_id uint, education_type, search_name string) ([]MenteeEntity, int64, error)
 	Insert(input MenteeEntity) error
 	Select(mentee_id uint) (MenteeEntity, error)
 	Update(mentee_id uint, input MenteeEntity) error
@@ -49,7 +49,7 @@ type MenteeDataInterface interface {
 }
 
 type MenteeServiceInterface interface {
-	GetAll(page, item uint) ([]MenteeEntity, error)
+	GetAll(page, item, status_id, class_id uint, education_type, search_name string) ([]MenteeEntity, bool, error)
 	Insert(input MenteeEntity) error
 	Get(mentee_id uint) (MenteeEntity, error)
 	Update(mentee_id uint, input MenteeEntity) error
