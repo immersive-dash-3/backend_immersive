@@ -36,11 +36,11 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	MService := menteeService.New(MData)
 	MHandler := menteeHandler.New(MService)
 
-	c.POST("/mentees", MHandler.AddMentee)
-	c.GET("/mentees", MHandler.GetAllMentee)
-	c.GET("/mentees/:mentee_id", MHandler.GetMenteeById)
-	c.PUT("/mentees/:mentee_id", MHandler.UpdateMentee)
-	c.DELETE("/mentees/:mentee_id", MHandler.DeleteMentee)
+	c.POST("/mentees", MHandler.AddMentee, middleware.JWTMiddleware())
+	c.GET("/mentees", MHandler.GetAllMentee, middleware.JWTMiddleware())
+	c.GET("/mentees/:mentee_id", MHandler.GetMenteeById, middleware.JWTMiddleware())
+	c.PUT("/mentees/:mentee_id", MHandler.UpdateMentee, middleware.JWTMiddleware())
+	c.DELETE("/mentees/:mentee_id", MHandler.DeleteMentee, middleware.JWTMiddleware())
 
 	MLData := menteeLogData.New(db)
 	MLService := menteeLogService.New(MLData)
