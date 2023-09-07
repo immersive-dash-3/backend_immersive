@@ -14,7 +14,8 @@ type Classes struct {
 
 func EntityToModel(class classes.ClassessEntity) Classes {
 	return Classes{
-		Name: class.Name,
+		Name:   class.Name,
+		UserID: class.UserID,
 	}
 }
 
@@ -25,6 +26,7 @@ func ModelToEntity(class Classes) classes.ClassessEntity {
 		UpdatedAt: class.UpdatedAt,
 		DeletedAt: class.DeletedAt.Time,
 		Name:      class.Name,
+		UserID:    class.UserID,
 	}
 }
 
