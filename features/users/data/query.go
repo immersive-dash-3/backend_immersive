@@ -130,7 +130,6 @@ func (data *UserDataImplementation) Login(email string, password string) (users.
 	dataLogin := ModelToEntity(user)
 
 	return dataLogin, nil
-
 }
 
 // Update implements users.UserDataInterface

@@ -21,38 +21,49 @@ func New(service mentee.MenteeServiceInterface) *MenteeHandler {
 }
 
 func (handler *MenteeHandler) GetAllMentee(c echo.Context) error {
+	var pageConv, itemConv, statusConv, classConv int
+	var errPageConv, errItemConv, errStatusConv, errClassConv error
+
 	page := c.QueryParam("page")
-	pageConv, errPageConv := strconv.Atoi(page)
-	if errPageConv != nil {
-		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errPageConv.Error()+"errPageConv", nil))
+	if page != "" {
+		pageConv, errPageConv = strconv.Atoi(page)
+		if errPageConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		}
 	}
 
 	itemPerPage := c.QueryParam("itemPerPage")
-	itemConve, errItemConv := strconv.Atoi(itemPerPage)
-	if errItemConv != nil {
-		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errItemConv.Error()+"errItemConv", nil))
+	if itemPerPage != "" {
+		itemConv, errItemConv = strconv.Atoi(itemPerPage)
+		if errItemConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		}
 	}
 
 	searchName := c.QueryParam("searchName")
-	// fmt.Println("searchName:", searchName)
 
 	status_id := c.QueryParam("status_id")
-	// fmt.Println("status_id:", status_id)
-	statusConv, errStatusConv := strconv.Atoi(status_id)
-	// fmt.Println(statusConv)
-	if errStatusConv != nil {
-		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errStatusConv.Error()+"errStatusConv", nil))
+	if status_id != "" {
+		statusConv, errStatusConv = strconv.Atoi(status_id)
+		if errStatusConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		}
+	} else {
+		statusConv = 0
 	}
 
 	class_id := c.QueryParam("class_id")
-	// fmt.Println("class_id:", class_id)
-	classConv, errClassConv := strconv.Atoi(class_id)
-	if errClassConv != nil {
-		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errClassConv.Error()+"errClassConv", nil))
+	if class_id != "" {
+		classConv, errClassConv = strconv.Atoi(class_id)
+		if errClassConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		}
+	} else {
+		classConv = 0
 	}
 
 	education_type := c.QueryParam("education_type")
-	result, next, err := handler.MenteeService.GetAll(uint(pageConv), uint(itemConve), uint(statusConv), uint(classConv), education_type, searchName)
+	result, next, err := handler.MenteeService.GetAll(uint(pageConv), uint(itemConv), uint(statusConv), uint(classConv), education_type, searchName)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(http.StatusInternalServerError, "operation failed, internal server error"+err.Error()+"err", nil))
 	}

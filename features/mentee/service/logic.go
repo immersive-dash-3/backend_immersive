@@ -28,18 +28,18 @@ func (service *MenteeService) Get(mentee_id uint) (mentee.MenteeEntity, error) {
 
 // GetAll implements mentee.MenteeServiceInterface.
 func (service *MenteeService) GetAll(page, item, status_id, class_id uint, education_type, search_name string) ([]mentee.MenteeEntity, bool, error) {
-	limit := item
-	offset := (page - 1) * item
-	result, count, err := service.menteeData.SelectAll(limit, offset, status_id, class_id, education_type, search_name)
+	result, count, err := service.menteeData.SelectAll(page, item, status_id, class_id, education_type, search_name)
 
 	next := true
-	pages := count / int64(item)
-	// fmt.Println("pages:", pages, "page:", page, "count:", count, "item:", item)
-	if count%int64(item) != 0 {
-		pages += 1
-	}
-	if page == uint(pages) {
-		next = false
+	var pages int64
+	if item != 0 {
+		pages = count / int64(item)
+		if count%int64(item) != 0 {
+			pages += 1
+		}
+		if page == uint(pages) {
+			next = false
+		}
 	}
 
 	return result, next, err
