@@ -62,10 +62,12 @@ type MenteeLogDataInterface interface{
 	Select(idMentee uint)(MenteeEntity,error)
 	Update(idLog uint, input MenteeLogEntity)(error)
 	Delete(idLog uint)(error)
+	SelectAll()([]MenteeLogEntity,error)
 }
 type MenteeLogServiceInterface interface{
 	Add(input MenteeLogEntity)error
 	Get(idMentee uint)(MenteeEntity,error)
 	Edit(idLog uint,input MenteeLogEntity)error
 	Delete(idLog uint)(error)
+	GetAll()([]MenteeLogEntity,error)
 }
