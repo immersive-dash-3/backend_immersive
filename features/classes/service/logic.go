@@ -15,8 +15,8 @@ type ClassService struct {
 
 // Delete implements classes.ClassServiceInterface.
 func (service *ClassService) Delete(id uint) error {
-	err:=service.classService.Delete(id)
-	if err != nil{
+	err := service.classService.Delete(id)
+	if err != nil {
 		return err
 	}
 	return nil
@@ -32,8 +32,8 @@ func (service *ClassService) GetById(id uint) (classes.ClassessEntity, error) {
 }
 
 // Edit implements classes.ClassServiceInterface.
-func (service *ClassService) Edit(id uint, input classes.ClassessEntity) (error) {
-	_,err := service.classService.Update(id, input)
+func (service *ClassService) Edit(id uint, input classes.ClassessEntity) error {
+	_, err := service.classService.Update(id, input)
 	if err != nil {
 		return err
 	}
@@ -42,24 +42,24 @@ func (service *ClassService) Edit(id uint, input classes.ClassessEntity) (error)
 }
 
 // GetAll implements classes.ClassServiceInterface.
-func (service *ClassService) GetAll(page, pageSize int) (bool,[]classes.ClassessEntity, error) {
-	count,data, err := service.classService.SelectAll(page,pageSize)
+func (service *ClassService) GetAll(page, pageSize int) (bool, []classes.ClassessEntity, error) {
+	count, data, err := service.classService.SelectAll(page, pageSize)
 	if err != nil {
-		return false,nil, err
+		return false, nil, err
 	}
 	var bolean bool
-	a:=count/(page)
-	if a<pageSize{
+	a := count / (page)
+	if a < pageSize {
 		bolean = true
-	}else{
-		bolean=false
+	} else {
+		bolean = false
 	}
 
 	return bolean, data, nil
 }
 
 // Add implements classes.ClassServiceInterface.
-func (service *ClassService) Add(input classes.ClassessEntity) (error) {
+func (service *ClassService) Add(input classes.ClassessEntity) error {
 	inputValidate := handlers.EntityToRequest(input)
 	errValidate := service.validate.Struct(&inputValidate)
 	if errValidate != nil {

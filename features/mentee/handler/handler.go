@@ -24,24 +24,44 @@ func (handler *MenteeHandler) GetAllMentee(c echo.Context) error {
 	page := c.QueryParam("page")
 	pageConv, errPageConv := strconv.Atoi(page)
 	if errPageConv != nil {
-		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errPageConv.Error()+"errPageConv", nil))
 	}
+
 	itemPerPage := c.QueryParam("itemPerPage")
 	itemConve, errItemConv := strconv.Atoi(itemPerPage)
 	if errItemConv != nil {
-		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errItemConv.Error()+"errItemConv", nil))
 	}
 
-	result, err := handler.MenteeService.GetAll(uint(pageConv), uint(itemConve))
+	searchName := c.QueryParam("searchName")
+	// fmt.Println("searchName:", searchName)
+
+	status_id := c.QueryParam("status_id")
+	// fmt.Println("status_id:", status_id)
+	statusConv, errStatusConv := strconv.Atoi(status_id)
+	// fmt.Println(statusConv)
+	if errStatusConv != nil {
+		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errStatusConv.Error()+"errStatusConv", nil))
+	}
+
+	class_id := c.QueryParam("class_id")
+	// fmt.Println("class_id:", class_id)
+	classConv, errClassConv := strconv.Atoi(class_id)
+	if errClassConv != nil {
+		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid"+errClassConv.Error()+"errClassConv", nil))
+	}
+
+	education_type := c.QueryParam("education_type")
+	result, next, err := handler.MenteeService.GetAll(uint(pageConv), uint(itemConve), uint(statusConv), uint(classConv), education_type, searchName)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.WebResponse(http.StatusInternalServerError, "operation failed, internal server error", nil))
+		return c.JSON(http.StatusInternalServerError, helper.WebResponse(http.StatusInternalServerError, "operation failed, internal server error"+err.Error()+"err", nil))
 	}
 	var responseData []MenteeResponseAll
 	for _, v := range result {
 		var data = EntityToResponseAll(v)
 		responseData = append(responseData, data)
 	}
-	return c.JSON(http.StatusOK, helper.WebResponse(http.StatusOK, "get data success", responseData))
+	return c.JSON(http.StatusOK, helper.FindAllWebResponse(http.StatusOK, "success", responseData, next))
 }
 
 func (handler *MenteeHandler) AddMentee(c echo.Context) error {
@@ -53,6 +73,9 @@ func (handler *MenteeHandler) AddMentee(c echo.Context) error {
 	var inputEntity = RequestToEntity(input)
 	err := handler.MenteeService.Insert(inputEntity)
 	if err != nil {
+		if strings.Contains(err.Error(), "no row affected") {
+			return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation failed, request resource not valid", nil))
+		}
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(http.StatusInternalServerError, "operation failed, internal server error"+err.Error(), nil))
 	}
 	return c.JSON(http.StatusCreated, helper.WebResponse(http.StatusCreated, "created", nil))

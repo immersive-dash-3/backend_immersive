@@ -57,21 +57,59 @@ func (repo *MenteeQuery) Select(mentee_id uint) (mentee.MenteeEntity, error) {
 }
 
 // SelectAll implements mentee.MenteeDataInterface.
-func (repo *MenteeQuery) SelectAll(limit, offset uint) ([]mentee.MenteeEntity, error) {
+func (repo *MenteeQuery) SelectAll(limit, offset, status_id, class_id uint, education_type, search_name string) ([]mentee.MenteeEntity, int64, error) {
 	var menteeModel []Mentee
-	tx := repo.db.Preload("Status", "deleted_at is null").Preload("Class", "deleted_at is null").Limit(int(limit)).Offset(int(offset)).Where("deleted_at is null").Find(&menteeModel)
+	var count int64
+	var tx *gorm.DB
+	// fmt.Println(search_name)
+
+	if status_id == 0 && class_id == 0 && education_type == "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("(first_name like ? or last_name like ?) and deleted_at is null", "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("(first_name like ? or last_name like ?) and deleted_at is null", "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id != 0 && class_id == 0 && education_type == "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("status_id = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("status_id = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id == 0 && class_id != 0 && education_type == "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("class_id = ? and (first_name like ? or last_name like ?) and deleted_at is null", class_id, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("class_id = ? and (first_name like ? or last_name like ?) and deleted_at is null", class_id, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id != 0 && class_id != 0 && education_type == "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("status_id = ? and class_id = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, class_id, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("status_id = ? and class_id = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, class_id, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id == 0 && class_id == 0 && education_type != "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id != 0 && class_id == 0 && education_type != "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("status_id = ? and education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("status_id = ? and education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id == 0 && class_id != 0 && education_type != "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("class_id = ? and education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", class_id, education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("class_id = ? and education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", class_id, education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	} else if status_id != 0 && class_id != 0 && education_type != "" {
+		tx = repo.db.Preload("Status").Preload("Class").Where("status_id = ? and class_id = ? and education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, class_id, education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+		count = tx.RowsAffected
+		tx = repo.db.Preload("Status").Preload("Class").Limit(int(limit)).Offset(int(offset)).Where("status_id = ? and class_id = ? and education_type = ? and (first_name like ? or last_name like ?) and deleted_at is null", status_id, class_id, education_type, "%"+search_name+"%", "%"+search_name+"%").Find(&menteeModel)
+	}
+
 	if tx.Error != nil {
-		return nil, tx.Error
+		return nil, 0, tx.Error
 	}
 	if tx.RowsAffected == 0 {
-		return nil, errors.New("no row affected")
+		return nil, 0, errors.New("no row affected")
 	}
+
 	var menteeData []mentee.MenteeEntity
 	for _, v := range menteeModel {
 		var data = ModelToEntity(v)
 		menteeData = append(menteeData, data)
 	}
-	return menteeData, nil
+	return menteeData, count, nil
 }
 
 // Update implements mentee.MenteeDataInterface.
