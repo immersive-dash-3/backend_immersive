@@ -114,7 +114,7 @@ func ModelToEntity(menteeLog MenteeLog)menteelogs.MenteeLogEntity{
 		DeletedAt: menteeLog.DeletedAt.Time,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		Status:  menteeLog.Status,
+		Status:    menteeLog.Status,
 		Log:       menteeLog.Log,
 		Users:     user.ModelToEntity(menteeLog.Users),
 	}
