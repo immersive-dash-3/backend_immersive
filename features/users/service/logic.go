@@ -27,23 +27,26 @@ func (s *UserServiceImplementation) Delete(id uint) error {
 }
 
 // FindAll implements users.UserServiceInterface
-func (s *UserServiceImplementation) FindAll(page int, itemsPerPage int, searchName string) ([]users.UserEntity, bool, error) {
+func (s *UserServiceImplementation) FindAll(qparams users.QueryParams) ([]users.UserEntity, bool, error) {
+	var total_pages int64
 	nextPage := true
 
-	res, total_users, err := s.data.FindAll(page, itemsPerPage, searchName)
+	res, total_users, err := s.data.FindAll(qparams)
 
 	if err != nil {
 		return []users.UserEntity{}, false, err
 	}
 
-	total_pages := total_users / int64(itemsPerPage)
+	if qparams.IsUserDashboard {
+		total_pages = total_users / int64(qparams.ItemsPerPage)
 
-	if total_users%int64(itemsPerPage) != 0 {
-		total_pages += 1
-	}
+		if total_users%int64(qparams.ItemsPerPage) != 0 {
+			total_pages += 1
+		}
 
-	if page == int(total_pages) {
-		nextPage = false
+		if qparams.Page == int(total_pages) {
+			nextPage = false
+		}
 	}
 
 	return res, nextPage, nil

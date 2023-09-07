@@ -1,6 +1,7 @@
 package data
 
 import (
+	classesGorm "immersive_project/klp3/features/classes/data"
 	"immersive_project/klp3/features/users"
 
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ type User struct {
 	Role     string `gorm:"type:enum('Default','Admin');default:'Default';column:role;not null"`
 	Address  string `gorm:"column:address"`
 	Status   string `gorm:"type:enum('Active','Non-Active','Deleted');default:'Active';column:status;not null"`
+	Classes  []classesGorm.Classes
 }
 
 func EntityToModel(user users.UserEntity) User {
