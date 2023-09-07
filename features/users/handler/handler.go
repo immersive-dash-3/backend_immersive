@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"immersive_project/klp3/app/middleware"
 	"immersive_project/klp3/exception"
 	"immersive_project/klp3/features/users"
 	"immersive_project/klp3/helper"
@@ -23,6 +24,11 @@ func New(service users.UserServiceInterface) users.UserHandlerInterface {
 func (handler *UserHandlerImplementation) Create(c echo.Context) error {
 	var userRequest UserRequest
 
+	userRole := middleware.ExtractTokenUserRole(c)
+	if userRole != "Admin" {
+		return c.JSON(http.StatusUnauthorized, helper.WebResponse(http.StatusUnauthorized, "Unauthorized", nil))
+	}
+
 	err := c.Bind(&userRequest)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "operation falied, request resource not valid", nil))
@@ -40,6 +46,11 @@ func (handler *UserHandlerImplementation) Create(c echo.Context) error {
 
 // Delete implements users.UserHandlerInterface
 func (handler *UserHandlerImplementation) Delete(c echo.Context) error {
+	userRole := middleware.ExtractTokenUserRole(c)
+	if userRole != "Admin" {
+		return c.JSON(http.StatusUnauthorized, helper.WebResponse(http.StatusUnauthorized, "Unauthorized", nil))
+	}
+
 	id := c.Param("user_id")
 	intId, err := strconv.Atoi(id)
 
@@ -107,6 +118,11 @@ func (handler *UserHandlerImplementation) FindById(c echo.Context) error {
 // Update implements users.UserHandlerInterface
 func (handler *UserHandlerImplementation) Update(c echo.Context) error {
 	var userRequest UserRequest
+	userRole := middleware.ExtractTokenUserRole(c)
+	if userRole != "Admin" {
+		return c.JSON(http.StatusUnauthorized, helper.WebResponse(http.StatusUnauthorized, "Unauthorized", nil))
+	}
+
 	id := c.Param("user_id")
 	intId, err := strconv.Atoi(id)
 
