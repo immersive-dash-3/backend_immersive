@@ -11,8 +11,8 @@ type User struct {
 	Name     string `gorm:"column:name;not null"`
 	Email    string `gorm:"column:email;unique;not null"`
 	Password string `gorm:"column:password;not null"`
-	Team     string `gorm:"type:enum('Manager','People','Placement','Mentor');default:'People';column:team;not null"`
-	Role     string `gorm:"type:enum('Non-Admin','Admin');default:'Non-Admin';column:role;not null"`
+	Team     string `gorm:"type:enum('Academic','People','Placement','Admission');default:'Academic';column:team;not null"`
+	Role     string `gorm:"type:enum('Default','Admin');default:'Default';column:role;not null"`
 	Address  string `gorm:"column:address"`
 	Status   string `gorm:"type:enum('Active','Non-Active','Deleted');default:'Active';column:status;not null"`
 }
