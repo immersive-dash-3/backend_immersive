@@ -42,7 +42,7 @@ func (repo *ClassData) SelectAll(input classes.QueryParams) (int64, []classes.Cl
 	var classInput []Classes
 	var total_classes int64
 
-	query := repo.db
+	query := repo.db.Preload("User")
 
 	if input.IsClassDashboard{
 		offset:=(input.Page-1)*input.ItemsPerPage

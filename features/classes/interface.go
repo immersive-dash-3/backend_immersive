@@ -11,6 +11,7 @@ type ClassessEntity struct {
 	DeletedAt time.Time 
 	Name      string    
 	UserID    uint
+	User UserEntity
 }
 
 type QueryParams struct {
@@ -18,6 +19,14 @@ type QueryParams struct {
 	ItemsPerPage    int
 	SearchName      string
 	IsClassDashboard bool
+}
+
+type UserEntity struct {
+	Id        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
+	Name      string
 }
 
 type ClassDataInterface interface {
