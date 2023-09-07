@@ -42,17 +42,17 @@ func (service *ClassService) Edit(id uint, input classes.ClassessEntity) error {
 }
 
 // GetAll implements classes.ClassServiceInterface.
-func (service *ClassService) GetAll(page, pageSize int) (bool, []classes.ClassessEntity, error) {
-	count, data, err := service.classService.SelectAll(page, pageSize)
+func (service *ClassService) GetAll(page int, pageSize int, searchName string) (bool, []classes.ClassessEntity, error) {
+	count, data, err := service.classService.SelectAll(page, pageSize, searchName)
 	if err != nil {
-		return false, nil, err
+		return true, nil, err
 	}
 	var bolean bool
 	a := count / (page)
 	if a < pageSize {
-		bolean = true
-	} else {
 		bolean = false
+	} else {
+		bolean = true
 	}
 
 	return bolean, data, nil

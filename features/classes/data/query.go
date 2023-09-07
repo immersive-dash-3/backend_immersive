@@ -38,7 +38,7 @@ func (repo *ClassData) Update(id uint, input classes.ClassessEntity) (uint, erro
 }
 
 // SelectAll implements classes.ClassDataInterface.
-func (repo *ClassData) SelectAll(page, pageSize int) (int, []classes.ClassessEntity, error) {
+func (repo *ClassData) SelectAll(page int, pageSize int, searchName string) (int, []classes.ClassessEntity, error) {
 	offset := (page - 1) * pageSize
 	var input []Classes
 	txx := repo.db.Find(&input)
@@ -47,15 +47,32 @@ func (repo *ClassData) SelectAll(page, pageSize int) (int, []classes.ClassessEnt
 	}
 	var count int = 0
 	var dataInput []Classes
-	for _, value := range input {
-		count++
-		dataInput = append(dataInput, value)
+
+	if searchName == "" {
+		for _, value := range input {
+			count++
+			dataInput = append(dataInput, value)
+		}
+		tx := repo.db.Offset(offset).Limit(pageSize).Find(&dataInput)
+		if tx.Error != nil {
+			return 0, nil, errors.New("error get all data per page")
+		}
+	} else {
+		txx := repo.db.Where("name like ?", "%"+searchName+"%").Find(&input)
+		if txx.Error != nil {
+			return 0, nil, errors.New("error get all data per page")
+		}
+		for _, value := range input {
+			count++
+			dataInput = append(dataInput, value)
+		}
+
+		tx := repo.db.Where("name like ?", "%"+searchName+"%").Offset(offset).Limit(pageSize).Find(&dataInput)
+		if tx.Error != nil {
+			return 0, nil, errors.New("error get all data per page")
+		}
 	}
 
-	tx := repo.db.Offset(offset).Limit(pageSize).Find(&dataInput)
-	if tx.Error != nil {
-		return 0, nil, errors.New("error get all data per page")
-	}
 	output := ModelToEntityAll(dataInput)
 	return count, output, nil
 }

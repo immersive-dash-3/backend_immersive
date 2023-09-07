@@ -114,8 +114,16 @@ func ModelToEntity(menteeLog MenteeLog)menteelogs.MenteeLogEntity{
 		DeletedAt: menteeLog.DeletedAt.Time,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		Status:  menteeLog.Status,
+		Status:    menteeLog.Status,
 		Log:       menteeLog.Log,
 		Users:     user.ModelToEntity(menteeLog.Users),
 	}
+}
+
+func ListModelToEntity(mentee []MenteeLog)[]menteelogs.MenteeLogEntity{
+	var input []menteelogs.MenteeLogEntity
+	for _,value:=range mentee{
+		input = append(input, ModelToEntity(value))
+	}
+	return input
 }

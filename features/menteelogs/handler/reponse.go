@@ -4,12 +4,11 @@ import (
 	class "immersive_project/klp3/features/classes/handler"
 	"immersive_project/klp3/features/menteelogs"
 	user "immersive_project/klp3/features/users/handler"
-	"time"
 )
 
 type MenteeLogResponse struct {
 	Id        uint              `json:"id" form:"id"`
-	CreatedAt time.Time         `json:"created_at,omitempty"`
+	CreatedAt string       		`json:"created_at,omitempty"`
 	MenteeID  uint              `json:"mentee_id" form:"mentee_id"`
 	UserID    uint              `json:"user_id" form:"user_id"`
 	Status    string            `json:"status" form:"status"`
@@ -55,9 +54,12 @@ func StatusEntityToResponse(status menteelogs.StatusEntity) StatusResponse {
 }
 
 func EntityToResponse(menteeLog menteelogs.MenteeLogEntity) MenteeLogResponse {
+
+	formattedTime := menteeLog.CreatedAt.Format("Jan, 2 2006")
+
 	return MenteeLogResponse{
 		Id:        menteeLog.Id,
-		CreatedAt: menteeLog.CreatedAt,
+		CreatedAt: formattedTime,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
 		Status:    menteeLog.Status,
