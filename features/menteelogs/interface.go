@@ -13,9 +13,10 @@ type MenteeLogEntity struct {
 	DeletedAt 	time.Time 	
 	MenteeID 	uint 		
 	UserID 		uint 		
-	Status      string      
+	StatusID      uint      
 	Log 		string 		
 	Users       user.UserEntity 
+	Status      StatusEntity
 }
 
 type MenteeEntity struct {
@@ -56,7 +57,7 @@ type StatusEntity struct{
 
 
 type MenteeLogDataInterface interface{
-	Insert(input MenteeLogEntity)(string,error)
+	Insert(input MenteeLogEntity)(uint,error)
 	InsertStatus(status string)(uint,error)
 	UpdateMentee(idStatus uint,idMentee uint)(error)
 	Select(idMentee uint)(MenteeEntity,error)

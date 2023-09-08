@@ -13,8 +13,9 @@ type MenteeLog struct {
 	MenteeID uint   `gorm:"column:mentee_id;default:1;not null"`
 	UserID   uint   `gorm:"column:user_id;not null"`
 	Log      string `gorm:"column:log;not null"`
-	Status   string `gorm:"column:status"`
+	StatusID uint `gorm:"column:status_id"`
 	Users    user.User `gorm:"foreignKey:UserID"`
+	Status   Status `gorm:"foreignKey:StatusID"`
 }
 
 type Mentee struct {
@@ -101,7 +102,8 @@ func EntityToModel(menteeLog menteelogs.MenteeLogEntity)MenteeLog{
 		MenteeID: menteeLog.MenteeID,
 		UserID:   menteeLog.UserID,
 		Log:      menteeLog.Log,
-		Status:   menteeLog.Status,
+		StatusID:   menteeLog.StatusID,
+		Status: StatusEntityToModel(menteeLog.Status),
 		Users: 	  user.EntityToModel(menteeLog.Users),
 	}
 }
@@ -114,7 +116,8 @@ func ModelToEntity(menteeLog MenteeLog)menteelogs.MenteeLogEntity{
 		DeletedAt: menteeLog.DeletedAt.Time,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		Status:    menteeLog.Status,
+		StatusID: menteeLog.StatusID,
+		Status:    StatusModelToEntity(menteeLog.Status),
 		Log:       menteeLog.Log,
 		Users:     user.ModelToEntity(menteeLog.Users),
 	}
