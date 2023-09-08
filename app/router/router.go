@@ -5,6 +5,7 @@ import (
 	classData "immersive_project/klp3/features/classes/data"
 	classHandler "immersive_project/klp3/features/classes/handler"
 	classService "immersive_project/klp3/features/classes/service"
+
 	usersData "immersive_project/klp3/features/users/data"
 	usersHandler "immersive_project/klp3/features/users/handler"
 	usersService "immersive_project/klp3/features/users/service"
@@ -20,6 +21,10 @@ import (
 	dashboardData "immersive_project/klp3/features/dashboard/data"
 	dashboardHandler "immersive_project/klp3/features/dashboard/handler"
 	dashboardService "immersive_project/klp3/features/dashboard/service"
+
+	statusData "immersive_project/klp3/features/statuses/data"
+	statusHandler "immersive_project/klp3/features/statuses/handler"
+	StatusService "immersive_project/klp3/features/statuses/service"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -72,4 +77,10 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	dashHandler := dashboardHandler.New(dashService)
 
 	c.GET("/dashboard", dashHandler.GetData)
+
+	statData := statusData.New(db)
+	statService := StatusService.New(statData)
+	statHandler := statusHandler.New(statService)
+
+	c.GET("/statuses", statHandler.GetAll)
 }

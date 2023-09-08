@@ -65,6 +65,9 @@ func (handler *MenteeHandler) GetAllMentee(c echo.Context) error {
 	education_type := c.QueryParam("education_type")
 	result, next, err := handler.MenteeService.GetAll(uint(pageConv), uint(itemConv), uint(statusConv), uint(classConv), education_type, searchName)
 	if err != nil {
+		if strings.Contains(err.Error(), "no row affected") {
+			return c.JSON(http.StatusNotFound, helper.WebResponse(http.StatusNotFound, "operation failed, resource not found", nil))
+		}
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(http.StatusInternalServerError, "operation failed, internal server error"+err.Error()+"err", nil))
 	}
 	var responseData []MenteeResponseAll
