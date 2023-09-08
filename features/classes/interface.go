@@ -5,24 +5,40 @@ import (
 )
 
 type ClassessEntity struct {
-	Id        uint      `json:"id" form:"id"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	DeletedAt time.Time `json:"deleted_at,omitempty"`
-	Name      string    `json:"name" form:"name"`
+	Id        uint      
+	CreatedAt time.Time 
+	UpdatedAt time.Time 
+	DeletedAt time.Time 
+	Name      string    
 	UserID    uint
+	User UserEntity
+}
+
+type QueryParams struct {
+	Page            int
+	ItemsPerPage    int
+	SearchName      string
+	IsClassDashboard bool
+}
+
+type UserEntity struct {
+	Id        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
+	Name      string
 }
 
 type ClassDataInterface interface {
 	Insert(input ClassessEntity) (uint, error)
 	SelectById(id uint) (ClassessEntity, error)
-	SelectAll(page int, pageSize int, searchName string) (int, []ClassessEntity, error)
+	SelectAll(input QueryParams) (int64, []ClassessEntity, error)
 	Update(id uint, input ClassessEntity) (uint, error)
 	Delete(id uint) error
 }
 type ClassServiceInterface interface {
 	Add(input ClassessEntity) error
-	GetAll(page int, pageSize int, searchName string) (bool, []ClassessEntity, error)
+	GetAll(input QueryParams) (bool, []ClassessEntity, error)
 	Edit(id uint, input ClassessEntity) error
 	GetById(id uint) (ClassessEntity, error)
 	Delete(id uint) error

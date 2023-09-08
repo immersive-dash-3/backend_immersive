@@ -29,18 +29,36 @@ func (handler *ClassHandler) Add(c echo.Context) error {
 
 func (handler *ClassHandler) GetAll(c echo.Context) error {
 
+	var qparams classes.QueryParams
+
+	itemsPerPage := c.QueryParam("itemsPerPage")
 	page := c.QueryParam("page")
-	pageItem := c.QueryParam("itemsPerPage")
+
+	if itemsPerPage == "" {
+		qparams.IsClassDashboard = false
+	} else {
+		qparams.IsClassDashboard = true
+		intItemsPerPage, err := strconv.Atoi(itemsPerPage)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, helper.WebResponse(400, "bad request", nil))
+		}
+		qparams.ItemsPerPage = intItemsPerPage
+
+	}
+
+	if page == "" {
+		qparams.Page = 1
+	} else {
+		intPage, err := strconv.Atoi(page)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, helper.WebResponse(400, "bad request", nil))
+		}
+		qparams.Page = intPage
+	}
+
 	searchName := c.QueryParam("searchNameClass")
-	Page, errPage := strconv.Atoi(page)
-	if errPage != nil {
-		return c.JSON(http.StatusNotFound, helper.WebResponse(404, "id not page", nil))
-	}
-	PageItem, errPageItem := strconv.Atoi(pageItem)
-	if errPageItem != nil {
-		return c.JSON(http.StatusNotFound, helper.WebResponse(404, "id not page item", nil))
-	}
-	bol, data, err := handler.classHandler.GetAll(Page, PageItem,searchName)
+	qparams.SearchName = searchName
+	bol, data, err := handler.classHandler.GetAll(qparams)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(500, err.Error(), nil))
 	}
