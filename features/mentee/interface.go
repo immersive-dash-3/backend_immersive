@@ -2,6 +2,7 @@ package mentee
 
 import (
 	class "immersive_project/klp3/features/classes"
+	"immersive_project/klp3/features/statuses"
 	"time"
 )
 
@@ -29,16 +30,16 @@ type MenteeEntity struct {
 	Graduate        string
 	Institution     string
 	Class           class.ClassessEntity
-	Status          StatusEntity
+	Status          statuses.StatusEntity
 }
 
-type StatusEntity struct {
-	Id        uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt time.Time
-	Name      string
-}
+// type StatusEntity struct {
+// 	Id        uint
+// 	CreatedAt time.Time
+// 	UpdatedAt time.Time
+// 	DeletedAt time.Time
+// 	Name      string
+// }
 
 type MenteeDataInterface interface {
 	SelectAll(page, item, status_id, class_id uint, education_type, search_name string) ([]MenteeEntity, int64, error)

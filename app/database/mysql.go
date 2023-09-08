@@ -6,6 +6,7 @@ import (
 	class "immersive_project/klp3/features/classes/data"
 	mentee "immersive_project/klp3/features/mentee/data"
 	menteeLog "immersive_project/klp3/features/menteelogs/data"
+	status "immersive_project/klp3/features/statuses/data"
 	user "immersive_project/klp3/features/users/data"
 
 	"gorm.io/driver/mysql"
@@ -24,5 +25,5 @@ func InitMysql(cfg *config.AppConfig) *gorm.DB {
 }
 
 func InittialMigration(db *gorm.DB) {
-	db.AutoMigrate(&user.User{}, &class.Classes{}, &mentee.Mentee{}, &menteeLog.MenteeLog{}, &mentee.Status{})
+	db.AutoMigrate(&user.User{}, &class.Classes{}, &mentee.Mentee{}, &menteeLog.MenteeLog{}, &status.Status{})
 }
