@@ -15,12 +15,12 @@ type MenteeLogData struct {
 // SelectAll implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) SelectAll() ([]menteelogs.MenteeLogEntity, error) {
 	var inputModel []MenteeLog
-	tx:=repo.db.Preload("Users").Find(&inputModel)
+	tx := repo.db.Preload("Users").Find(&inputModel)
 	if tx.Error != nil {
-		return nil,errors.New("failed get all log")
-	}	
-	output:=ListModelToEntity(inputModel)
-	return output,nil
+		return nil, errors.New("failed get all log")
+	}
+	output := ListModelToEntity(inputModel)
+	return output, nil
 }
 
 // Delete implements menteelogs.MenteeLogDataInterface.
@@ -52,14 +52,13 @@ func (repo *MenteeLogData) Update(idLog uint, input menteelogs.MenteeLogEntity) 
 // Select implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) Select(idMentee uint) (menteelogs.MenteeEntity, error) {
 	var input Mentee
-	tx := repo.db.Preload("MenteeLogs.Status").Preload("MenteeLogs.Users").Preload("Status").Preload("Class").Preload("MenteeLogs").Preload("MenteeLogs.Users").First(&input, idMentee)
+	tx := repo.db.Preload("MenteeLogs.Status").Preload("MenteeLogs.Users").Preload("Status").Preload("Class").Preload("MenteeLogs").First(&input, idMentee)
 	if tx.Error != nil {
 		return menteelogs.MenteeEntity{}, errors.New("failed read feedback mentee")
 	}
 	output := ModelMenteeToEntity(input)
 	fmt.Println(output)
 	return output, nil
-
 }
 
 // Insert implements menteelogs.MenteeLogDataInterface.
