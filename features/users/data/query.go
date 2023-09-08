@@ -50,36 +50,35 @@ func (data *UserDataImplementation) Delete(id uint) error {
 }
 
 // FindAll implements users.UserDataInterface
-func (data *UserDataImplementation) FindAll(page, itemsPerPage int, searchName string) ([]users.UserEntity, int64, error) {
+func (data *UserDataImplementation) FindAll(qparams users.QueryParams) ([]users.UserEntity, int64, error) {
 	var userEntities []users.UserEntity
 	var userDatas []User
 	var total_users int64
 
-	offset := (page - 1) * itemsPerPage
-	limit := itemsPerPage
-	if searchName != "" {
-		tx := data.db.Where("name like ?", "%"+searchName+"%").Find(&userDatas)
+	query := data.db
+
+	if qparams.IsUserDashboard {
+		offset := (qparams.Page - 1) * qparams.ItemsPerPage
+		limit := qparams.ItemsPerPage
+
+		if qparams.SearchName != "" {
+			query = query.Where("name like ?", "%"+qparams.SearchName+"%")
+		}
+
+		tx := query.Find(&userDatas)
 		if tx.Error != nil {
 			return []users.UserEntity{}, 0, exception.ErrInternalServer
 		}
+
 		total_users = tx.RowsAffected
 
-		tx = data.db.Where("name like ?", "%"+searchName+"%").Offset(offset).Limit(limit).Find(&userDatas)
+		query = query.Offset(offset).Limit(limit)
 
-		if tx.Error != nil {
-			return []users.UserEntity{}, 0, exception.ErrInternalServer
-		}
-	} else {
-		tx := data.db.Find(&userDatas)
-		if tx.Error != nil {
-			return []users.UserEntity{}, 0, exception.ErrInternalServer
-		}
-		total_users = tx.RowsAffected
-		tx = data.db.Offset(offset).Limit(limit).Find(&userDatas)
+	}
 
-		if tx.Error != nil {
-			return []users.UserEntity{}, 0, exception.ErrInternalServer
-		}
+	tx := query.Find(&userDatas)
+	if tx.Error != nil {
+		return []users.UserEntity{}, 0, exception.ErrInternalServer
 	}
 
 	for _, data := range userDatas {

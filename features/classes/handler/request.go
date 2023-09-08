@@ -6,22 +6,20 @@ import (
 
 type ClassesRequest struct {
 	Name 			string 					`json:"name" form:"name" validate:"required"`
-}
-
-type PageRequest struct {
-	Page 			int 					`json:"page" form:"page"`
-	ItemsPerPage    int						`json:"item_per_page" form:"item_per_page"`
+	UserId 			uint 					`json:"user_id" form:"user_id"`
 }
 
 
 func EntityToRequest(class classes.ClassessEntity)ClassesRequest{
 	return ClassesRequest{
-		Name: class.Name,
+		Name: 	class.Name,
+		UserId: class.UserID,
 	}
 }
 
 func RequestToEntity(class ClassesRequest) classes.ClassessEntity{
 	return classes.ClassessEntity{
 		Name: 			class.Name,
+		UserID: 		class.UserId,
 	}
 }

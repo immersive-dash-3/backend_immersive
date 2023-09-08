@@ -52,7 +52,7 @@ func (repo *MenteeLogData) Update(idLog uint, input menteelogs.MenteeLogEntity) 
 // Select implements menteelogs.MenteeLogDataInterface.
 func (repo *MenteeLogData) Select(idMentee uint) (menteelogs.MenteeEntity, error) {
 	var input Mentee
-	tx := repo.db.Preload("MenteeLogs.Users").Preload("Status").Preload("Class").Preload("MenteeLogs").Preload("MenteeLogs.Users").First(&input, idMentee)
+	tx := repo.db.Preload("MenteeLogs.Status").Preload("MenteeLogs.Users").Preload("Status").Preload("Class").Preload("MenteeLogs").Preload("MenteeLogs.Users").First(&input, idMentee)
 	if tx.Error != nil {
 		return menteelogs.MenteeEntity{}, errors.New("failed read feedback mentee")
 	}
@@ -63,16 +63,16 @@ func (repo *MenteeLogData) Select(idMentee uint) (menteelogs.MenteeEntity, error
 }
 
 // Insert implements menteelogs.MenteeLogDataInterface.
-func (repo *MenteeLogData) Insert(input menteelogs.MenteeLogEntity) (string, error) {
+func (repo *MenteeLogData) Insert(input menteelogs.MenteeLogEntity) (uint, error) {
 	inputModel := EntityToModel(input)
 	tx := repo.db.Create(&inputModel)
 	if tx.Error != nil {
-		return "", errors.New("failed insert log")
+		return 0, errors.New("failed insert log")
 	}
 	if tx.RowsAffected == 0 {
-		return "", errors.New("row not affected table log")
+		return 0, errors.New("row not affected table log")
 	}
-	return inputModel.Status, nil
+	return inputModel.StatusID, nil
 }
 
 // InsertStatus implements menteelogs.MenteeLogDataInterface.

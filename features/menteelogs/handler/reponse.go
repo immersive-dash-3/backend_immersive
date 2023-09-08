@@ -11,9 +11,10 @@ type MenteeLogResponse struct {
 	CreatedAt string       		`json:"created_at,omitempty"`
 	MenteeID  uint              `json:"mentee_id" form:"mentee_id"`
 	UserID    uint              `json:"user_id" form:"user_id"`
-	Status    string            `json:"status" form:"status"`
+	StatusID  uint            `json:"status_id" form:"status_id"`
 	Log       string            `json:"log" form:"log"`
 	Users     user.UserResponse `json:"users,omitempty"`
+	Status    StatusResponse `json:"status,omitempty"`
 }
 
 type MenteeResponse struct {
@@ -62,9 +63,10 @@ func EntityToResponse(menteeLog menteelogs.MenteeLogEntity) MenteeLogResponse {
 		CreatedAt: formattedTime,
 		MenteeID:  menteeLog.MenteeID,
 		UserID:    menteeLog.UserID,
-		Status:    menteeLog.Status,
+		StatusID:  menteeLog.StatusID,
 		Log:       menteeLog.Log,
 		Users:     user.UserEntityToResponse(menteeLog.Users),
+		Status: StatusEntityToResponse(menteeLog.Status),
 	}
 }
 

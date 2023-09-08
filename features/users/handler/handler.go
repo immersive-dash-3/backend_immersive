@@ -71,21 +71,38 @@ func (handler *UserHandlerImplementation) Delete(c echo.Context) error {
 
 // FindAll implements users.UserHandlerInterface
 func (handler *UserHandlerImplementation) FindAll(c echo.Context) error {
-	page := c.QueryParam("page")
+	var qparams users.QueryParams
+
 	itemsPerPage := c.QueryParam("itemsPerPage")
+	page := c.QueryParam("page")
+
+	if itemsPerPage == "" {
+		qparams.IsUserDashboard = false
+	} else {
+		qparams.IsUserDashboard = true
+		intItemsPerPage, err := strconv.Atoi(itemsPerPage)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "bad request", nil))
+		}
+		qparams.ItemsPerPage = intItemsPerPage
+
+	}
+
+	if page == "" {
+		qparams.Page = 1
+	} else {
+		intPage, err := strconv.Atoi(page)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "bad request", nil))
+		}
+		qparams.Page = intPage
+	}
+
 	searchName := c.QueryParam("searchName")
+	qparams.SearchName = searchName
 
-	intPage, err := strconv.Atoi(page)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "bad request", nil))
-	}
+	res, nextPage, err := handler.service.FindAll(qparams)
 
-	intItemsPerPage, err := strconv.Atoi(itemsPerPage)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, helper.WebResponse(http.StatusBadRequest, "bad request", nil))
-	}
-
-	res, nextPage, err := handler.service.FindAll(intPage, intItemsPerPage, searchName)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.WebResponse(http.StatusInternalServerError, "operation failed, internal server error", nil))
 	}

@@ -42,20 +42,25 @@ func (service *ClassService) Edit(id uint, input classes.ClassessEntity) error {
 }
 
 // GetAll implements classes.ClassServiceInterface.
-func (service *ClassService) GetAll(page int, pageSize int, searchName string) (bool, []classes.ClassessEntity, error) {
-	count, data, err := service.classService.SelectAll(page, pageSize, searchName)
+func (service *ClassService) GetAll(input classes.QueryParams) (bool, []classes.ClassessEntity, error) {
+	var total_pages int64
+	nextPage := true
+	count, data, err := service.classService.SelectAll(input)
 	if err != nil {
 		return true, nil, err
 	}
-	var bolean bool
-	a := count / (page)
-	if a < pageSize {
-		bolean = false
-	} else {
-		bolean = true
+	if input.IsClassDashboard{
+		total_pages = count /int64(input.ItemsPerPage)
+		if count % int64(input.ItemsPerPage) != 0{
+			total_pages +=1
+		}
+
+		if input.Page == int(total_pages){
+			nextPage = false
+		}
 	}
 
-	return bolean, data, nil
+	return nextPage, data, nil
 }
 
 // Add implements classes.ClassServiceInterface.
