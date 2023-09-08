@@ -17,6 +17,10 @@ import (
 	menteeHandler "immersive_project/klp3/features/mentee/handler"
 	menteeService "immersive_project/klp3/features/mentee/service"
 
+	dashboardData "immersive_project/klp3/features/dashboard/data"
+	dashboardHandler "immersive_project/klp3/features/dashboard/handler"
+	dashboardService "immersive_project/klp3/features/dashboard/service"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -62,4 +66,10 @@ func InitRouter(db *gorm.DB, c *echo.Echo) {
 	c.PUT("/users/:user_id", userHandler.Update, middleware.JWTMiddleware())
 	c.DELETE("/users/:user_id", userHandler.Delete, middleware.JWTMiddleware())
 	c.POST("/users", userHandler.Create, middleware.JWTMiddleware())
+
+	dashData := dashboardData.New(db)
+	dashService := dashboardService.New(dashData)
+	dashHandler := dashboardHandler.New(dashService)
+
+	c.GET("/dashboard", dashHandler.GetData)
 }
